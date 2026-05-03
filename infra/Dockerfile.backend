@@ -14,6 +14,7 @@ COPY backend /app/backend
 COPY salidas /app/salidas
 COPY memoria /app/memoria
 COPY scripts /app/scripts
+COPY entregables /app/entregables
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=utf-8

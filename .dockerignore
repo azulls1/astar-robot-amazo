@@ -16,7 +16,6 @@
 
 # Carpetas locales / privadas
 _local
-entregables
 .env
 
 # Git / IDE / OS
