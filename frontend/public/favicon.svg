@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#04202C"/>
+  <text x="32" y="44" text-anchor="middle"
+        font-family="'Sora','Helvetica Neue',Arial,sans-serif"
+        font-size="36" font-weight="700"
+        fill="#FFFFFF">
+    A<tspan font-size="22" dy="-3" fill="#9EADA3">*</tspan>
+  </text>
+</svg>

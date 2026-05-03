@@ -1,0 +1,612 @@
+============================================================
+  A* - Robot Amazon (matriz 4x4, 3 inventarios)
+  Heuristica: Distancia de Manhattan
+  Coste por accion: g = 1
+============================================================
+
+Estado inicial:
++----+----+----+----+
+| M1 | ## |    | M3 |
++----+----+----+----+
+|    | ## |    |    |
++----+----+----+----+
+| M2 |    | R  |    |
++----+----+----+----+
+|    |    |    |    |
++----+----+----+----+
+
+  h(inicial) = 15    (g=0, f = g + h = 15)
+
+Objetivos: M1 -> (3, 3) ; M2 -> (3, 2) ; M3 -> (3, 1)
+
+=== Iteracion 1 ===
+Nodo expandido:
+  [g=0 h=15 f=15]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  (vacia)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+
+=== Iteracion 2 ===
+Nodo expandido:
+  [g=1 h=14 f=15]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=1 h=15 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+
+=== Iteracion 3 ===
+Nodo expandido:
+  [g=2 h=13 f=15]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=1 h=15 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+
+=== Iteracion 4 ===
+Nodo expandido:
+  [g=3 h=12 f=15]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=3 h=12 f=15]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=1 h=15 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=3 h=14 f=17]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(0,3)
+  [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+  [g=3]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(0,3)
+
+=== Iteracion 5 ===
+Nodo expandido:
+  [g=4 h=11 f=15]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=3 h=12 f=15]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=1 h=15 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=4 h=13 f=17]  R(3,0) carga=M2 M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(3,0) M3(0,3)
+  [g=3 h=14 f=17]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(0,3)
+  [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=4 h=14 f=18]  R(3,1) carga=- M1(0,0) M2(3,2) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+  [g=3]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(0,3)
+  [g=4]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(0,3)
+
+=== Iteracion 6 ===
+Nodo expandido:
+  [g=3 h=12 f=15]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=1 h=15 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=5 h=12 f=17]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,3) carga=M2 M1(0,0) M2(3,3) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,3) M3(0,3)
+  [g=4 h=13 f=17]  R(3,0) carga=M2 M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(3,0) M3(0,3)
+  [g=3 h=14 f=17]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(0,3)
+  [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=4 h=14 f=18]  R(3,1) carga=- M1(0,0) M2(3,2) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+  [g=3]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=3]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(0,3)
+  [g=4]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(0,3)
+
+=== Iteracion 7 ===
+Nodo expandido:
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(3,1) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=1 h=15 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=5 h=12 f=17]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,3) carga=M2 M1(0,0) M2(3,3) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,3) M3(0,3)
+  [g=4 h=13 f=17]  R(3,0) carga=M2 M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(1,2) carga=M2 M1(0,0) M2(1,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,3) carga=M2 M1(0,0) M2(2,3) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(1,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,3) M3(0,3)
+  [g=3 h=14 f=17]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(0,3)
+  [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=4 h=14 f=18]  R(3,1) carga=- M1(0,0) M2(3,2) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+  [g=3]  R(2,1) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=3]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=3]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(0,3)
+  [g=4]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(0,3)
+
+=== Iteracion 8 ===
+Nodo expandido:
+  [g=3 h=12 f=15]  R(2,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=1 h=15 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=5 h=12 f=17]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,3) carga=M2 M1(0,0) M2(3,3) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,3) M3(0,3)
+  [g=4 h=13 f=17]  R(3,0) carga=M2 M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(1,2) carga=M2 M1(0,0) M2(1,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,3) carga=M2 M1(0,0) M2(2,3) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(1,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,3) M3(0,3)
+  [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=3 h=14 f=17]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(0,3)
+  [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=4 h=14 f=18]  R(3,1) carga=- M1(0,0) M2(3,2) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+  [g=3]  R(2,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=3]  R(2,1) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=3]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=3]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(0,3)
+  [g=4]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(0,3)
+
+=== Iteracion 9 ===
+Nodo expandido:
+  [g=1 h=15 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=5 h=12 f=17]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,3) carga=M2 M1(0,0) M2(3,3) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,3) M3(0,3)
+  [g=4 h=13 f=17]  R(3,0) carga=M2 M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(1,2) carga=M2 M1(0,0) M2(1,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,3) carga=M2 M1(0,0) M2(2,3) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(1,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,3) M3(0,3)
+  [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=3 h=14 f=17]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(0,3)
+  [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=4 h=14 f=18]  R(3,1) carga=- M1(0,0) M2(3,2) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+  [g=3]  R(2,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=3]  R(2,1) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=3]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=3]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(0,3)
+  [g=4]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(0,3)
+
+=== Iteracion 10 ===
+Nodo expandido:
+  [g=2 h=14 f=16]  R(0,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+Lista ABIERTA (ordenada por f, luego h, luego FIFO):
+  [g=2 h=14 f=16]  R(1,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=5 h=12 f=17]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,3) carga=M2 M1(0,0) M2(3,3) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,3) M3(0,3)
+  [g=4 h=13 f=17]  R(3,0) carga=M2 M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(3,0) M3(0,3)
+  [g=4 h=13 f=17]  R(1,2) carga=M2 M1(0,0) M2(1,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,3) carga=M2 M1(0,0) M2(2,3) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(1,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,1) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,3) M3(0,3)
+  [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=3 h=14 f=17]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(0,3)
+  [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=4 h=14 f=18]  R(3,1) carga=- M1(0,0) M2(3,2) M3(0,3)
+Lista CERRADA (estado -> mejor g):
+  [g=0]  R(2,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=1]  R(2,1) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(0,2) carga=- M1(0,0) M2(2,0) M3(0,3)
+  [g=2]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(0,3)
+  [g=3]  R(2,1) carga=- M1(0,0) M2(2,2) M3(0,3)
+  [g=3]  R(2,1) carga=- M1(0,0) M2(3,1) M3(0,3)
+  [g=3]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(0,3)
+  [g=3]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(0,3)
+  [g=4]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(0,3)
+
+It  11 | expand [g=3 h=13 f=16]  R(0,2) carga=M3 M1(0,0) M2(2,0) M3(0,2) | |abierta|= 24 |cerrada|= 11
+It  12 | expand [g=4 h=12 f=16]  R(1,2) carga=M3 M1(0,0) M2(2,0) M3(1,2) | |abierta|= 26 |cerrada|= 12
+It  13 | expand [g=5 h=11 f=16]  R(2,2) carga=M3 M1(0,0) M2(2,0) M3(2,2) | |abierta|= 30 |cerrada|= 13
+It  14 | expand [g=6 h=10 f=16]  R(3,2) carga=M3 M1(0,0) M2(2,0) M3(3,2) | |abierta|= 36 |cerrada|= 14
+It  15 | expand [g=7 h=9 f=16]  R(3,1) carga=M3 M1(0,0) M2(2,0) M3(3,1) | |abierta|= 40 |cerrada|= 15
+It  16 | expand [g=6 h=10 f=16]  R(2,1) carga=M3 M1(0,0) M2(2,0) M3(2,1) | |abierta|= 44 |cerrada|= 16
+It  17 | expand [g=7 h=9 f=16]  R(2,1) carga=- M1(0,0) M2(2,0) M3(3,1) | |abierta|= 45 |cerrada|= 17
+It  18 | expand [g=8 h=8 f=16]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(3,1) | |abierta|= 46 |cerrada|= 18
+It  19 | expand [g=9 h=7 f=16]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(3,1) | |abierta|= 48 |cerrada|= 19
+It  20 | expand [g=10 h=6 f=16]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(3,1) | |abierta|= 54 |cerrada|= 20
+It  21 | expand [g=9 h=7 f=16]  R(2,1) carga=- M1(0,0) M2(2,2) M3(3,1) | |abierta|= 56 |cerrada|= 21
+It  22 | expand [g=6 h=10 f=16]  R(2,2) carga=- M1(0,0) M2(2,0) M3(3,2) | |abierta|= 57 |cerrada|= 22
+It  23 | expand [g=6 h=10 f=16]  R(2,2) carga=- M1(0,0) M2(2,0) M3(2,1) | |abierta|= 59 |cerrada|= 23
+It  24 | expand [g=5 h=11 f=16]  R(1,2) carga=- M1(0,0) M2(2,0) M3(2,2) | |abierta|= 61 |cerrada|= 24
+It  25 | expand [g=4 h=12 f=16]  R(0,2) carga=- M1(0,0) M2(2,0) M3(1,2) | |abierta|= 62 |cerrada|= 25
+It  26 | expand [g=2 h=14 f=16]  R(1,3) carga=- M1(0,0) M2(2,0) M3(0,3) | |abierta|= 62 |cerrada|= 26
+It  27 | expand [g=3 h=13 f=16]  R(1,3) carga=M3 M1(0,0) M2(2,0) M3(1,3) | |abierta|= 63 |cerrada|= 27
+It  28 | expand [g=4 h=12 f=16]  R(2,3) carga=M3 M1(0,0) M2(2,0) M3(2,3) | |abierta|= 66 |cerrada|= 28
+It  29 | expand [g=5 h=11 f=16]  R(3,3) carga=M3 M1(0,0) M2(2,0) M3(3,3) | |abierta|= 69 |cerrada|= 29
+It  30 | expand [g=6 h=10 f=16]  R(3,3) carga=- M1(0,0) M2(2,0) M3(3,2) | |abierta|= 70 |cerrada|= 30
+It  31 | expand [g=5 h=11 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(3,3) | |abierta|= 70 |cerrada|= 31
+It  32 | expand [g=5 h=11 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(2,2) | |abierta|= 71 |cerrada|= 32
+It  33 | expand [g=4 h=12 f=16]  R(1,3) carga=- M1(0,0) M2(2,0) M3(2,3) | |abierta|= 72 |cerrada|= 33
+It  34 | expand [g=4 h=12 f=16]  R(1,3) carga=- M1(0,0) M2(2,0) M3(1,2) | |abierta|= 73 |cerrada|= 34
+It  35 | expand [g=1 h=15 f=16]  R(2,3) carga=- M1(0,0) M2(2,0) M3(0,3) | |abierta|= 74 |cerrada|= 35
+It  36 | expand [g=7 h=10 f=17]  R(2,1) carga=- M1(0,0) M2(2,0) M3(3,2) | |abierta|= 74 |cerrada|= 36
+It  37 | expand [g=8 h=9 f=17]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(3,2) | |abierta|= 75 |cerrada|= 37
+It  38 | expand [g=9 h=8 f=17]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(3,2) | |abierta|= 79 |cerrada|= 38
+It  39 | expand [g=9 h=8 f=17]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(3,2) | |abierta|= 81 |cerrada|= 39
+It  40 | expand [g=9 h=8 f=17]  R(2,1) carga=- M1(0,0) M2(3,1) M3(3,2) | |abierta|= 85 |cerrada|= 40
+It  41 | expand [g=9 h=8 f=17]  R(2,1) carga=- M1(0,0) M2(2,2) M3(3,2) | |abierta|= 86 |cerrada|= 41
+It  42 | expand [g=5 h=12 f=17]  R(3,3) carga=M2 M1(0,0) M2(3,3) M3(0,3) | |abierta|= 86 |cerrada|= 42
+It  43 | expand [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(2,2) M3(0,3) | |abierta|= 88 |cerrada|= 43
+It  44 | expand [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|= 89 |cerrada|= 44
+It  45 | expand [g=5 h=12 f=17]  R(3,2) carga=- M1(0,0) M2(3,3) M3(0,3) | |abierta|= 90 |cerrada|= 45
+It  46 | expand [g=4 h=13 f=17]  R(3,0) carga=M2 M1(0,0) M2(3,0) M3(0,3) | |abierta|= 91 |cerrada|= 46
+It  47 | expand [g=5 h=12 f=17]  R(3,0) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|= 93 |cerrada|= 47
+It  48 | expand [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,1) M3(0,3) | |abierta|= 93 |cerrada|= 48
+It  49 | expand [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(3,0) M3(0,3) | |abierta|= 94 |cerrada|= 49
+It  50 | expand [g=4 h=13 f=17]  R(1,2) carga=M2 M1(0,0) M2(1,2) M3(0,3) | |abierta|= 95 |cerrada|= 50
+It  51 | expand [g=5 h=12 f=17]  R(1,2) carga=- M1(0,0) M2(2,2) M3(0,3) | |abierta|= 99 |cerrada|= 51
+It  52 | expand [g=4 h=13 f=17]  R(2,3) carga=M2 M1(0,0) M2(2,3) M3(0,3) | |abierta|=100 |cerrada|= 52
+It  53 | expand [g=5 h=12 f=17]  R(2,3) carga=- M1(0,0) M2(3,3) M3(0,3) | |abierta|=103 |cerrada|= 53
+It  54 | expand [g=5 h=12 f=17]  R(2,3) carga=- M1(0,0) M2(2,2) M3(0,3) | |abierta|=104 |cerrada|= 54
+It  55 | expand [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(1,2) M3(0,3) | |abierta|=105 |cerrada|= 55
+It  56 | expand [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=107 |cerrada|= 56
+It  57 | expand [g=5 h=12 f=17]  R(1,2) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=109 |cerrada|= 57
+It  58 | expand [g=6 h=11 f=17]  R(0,2) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=110 |cerrada|= 58
+It  59 | expand [g=7 h=10 f=17]  R(0,2) carga=M3 M1(0,0) M2(3,2) M3(0,2) | |abierta|=110 |cerrada|= 59
+It  60 | expand [g=8 h=9 f=17]  R(1,2) carga=M3 M1(0,0) M2(3,2) M3(1,2) | |abierta|=112 |cerrada|= 60
+It  61 | expand [g=9 h=8 f=17]  R(2,2) carga=M3 M1(0,0) M2(3,2) M3(2,2) | |abierta|=116 |cerrada|= 61
+It  62 | expand [g=10 h=7 f=17]  R(2,1) carga=M3 M1(0,0) M2(3,2) M3(2,1) | |abierta|=120 |cerrada|= 62
+It  63 | expand [g=11 h=6 f=17]  R(3,1) carga=M3 M1(0,0) M2(3,2) M3(3,1) | |abierta|=124 |cerrada|= 63
+It  64 | expand [g=10 h=7 f=17]  R(2,2) carga=- M1(0,0) M2(3,2) M3(2,1) | |abierta|=126 |cerrada|= 64
+It  65 | expand [g=9 h=8 f=17]  R(1,2) carga=- M1(0,0) M2(3,2) M3(2,2) | |abierta|=128 |cerrada|= 65
+It  66 | expand [g=8 h=9 f=17]  R(0,2) carga=- M1(0,0) M2(3,2) M3(1,2) | |abierta|=129 |cerrada|= 66
+It  67 | expand [g=6 h=11 f=17]  R(1,3) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=129 |cerrada|= 67
+It  68 | expand [g=7 h=10 f=17]  R(1,3) carga=M3 M1(0,0) M2(3,2) M3(1,3) | |abierta|=130 |cerrada|= 68
+It  69 | expand [g=8 h=9 f=17]  R(2,3) carga=M3 M1(0,0) M2(3,2) M3(2,3) | |abierta|=133 |cerrada|= 69
+It  70 | expand [g=9 h=8 f=17]  R(3,3) carga=M3 M1(0,0) M2(3,2) M3(3,3) | |abierta|=136 |cerrada|= 70
+It  71 | expand [g=9 h=8 f=17]  R(2,3) carga=- M1(0,0) M2(3,2) M3(3,3) | |abierta|=136 |cerrada|= 71
+It  72 | expand [g=9 h=8 f=17]  R(2,3) carga=- M1(0,0) M2(3,2) M3(2,2) | |abierta|=137 |cerrada|= 72
+It  73 | expand [g=8 h=9 f=17]  R(1,3) carga=- M1(0,0) M2(3,2) M3(2,3) | |abierta|=138 |cerrada|= 73
+It  74 | expand [g=8 h=9 f=17]  R(1,3) carga=- M1(0,0) M2(3,2) M3(1,2) | |abierta|=139 |cerrada|= 74
+It  75 | expand [g=5 h=12 f=17]  R(2,3) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=140 |cerrada|= 75
+It  76 | expand [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,1) M3(0,3) | |abierta|=140 |cerrada|= 76
+It  77 | expand [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(2,3) M3(0,3) | |abierta|=142 |cerrada|= 77
+It  78 | expand [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|=144 |cerrada|= 78
+It  79 | expand [g=5 h=12 f=17]  R(1,0) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|=144 |cerrada|= 79
+It  80 | expand [g=6 h=11 f=17]  R(1,0) carga=M1 M1(1,0) M2(3,1) M3(0,3) | |abierta|=144 |cerrada|= 80
+It  81 | expand [g=7 h=10 f=17]  R(2,0) carga=M1 M1(2,0) M2(3,1) M3(0,3) | |abierta|=146 |cerrada|= 81
+It  82 | expand [g=8 h=9 f=17]  R(3,0) carga=M1 M1(3,0) M2(3,1) M3(0,3) | |abierta|=150 |cerrada|= 82
+It  83 | expand [g=8 h=9 f=17]  R(2,1) carga=M1 M1(2,1) M2(3,1) M3(0,3) | |abierta|=150 |cerrada|= 83
+It  84 | expand [g=9 h=8 f=17]  R(2,2) carga=M1 M1(2,2) M2(3,1) M3(0,3) | |abierta|=152 |cerrada|= 84
+It  85 | expand [g=10 h=7 f=17]  R(3,2) carga=M1 M1(3,2) M2(3,1) M3(0,3) | |abierta|=158 |cerrada|= 85
+It  86 | expand [g=11 h=6 f=17]  R(3,3) carga=M1 M1(3,3) M2(3,1) M3(0,3) | |abierta|=160 |cerrada|= 86
+It  87 | expand [g=11 h=6 f=17]  R(3,2) carga=- M1(3,3) M2(3,1) M3(0,3) | |abierta|=162 |cerrada|= 87
+It  88 | expand [g=12 h=5 f=17]  R(3,2) carga=M2 M1(3,3) M2(3,2) M3(0,3) | |abierta|=163 |cerrada|= 88
+It  89 | expand [g=10 h=7 f=17]  R(2,3) carga=M1 M1(2,3) M2(3,1) M3(0,3) | |abierta|=165 |cerrada|= 89
+It  90 | expand [g=10 h=7 f=17]  R(2,2) carga=- M1(3,2) M2(3,1) M3(0,3) | |abierta|=168 |cerrada|= 90
+It  91 | expand [g=10 h=7 f=17]  R(2,2) carga=- M1(2,3) M2(3,1) M3(0,3) | |abierta|=170 |cerrada|= 91
+It  92 | expand [g=9 h=8 f=17]  R(2,1) carga=- M1(2,2) M2(3,1) M3(0,3) | |abierta|=172 |cerrada|= 92
+It  93 | expand [g=8 h=9 f=17]  R(2,0) carga=- M1(3,0) M2(3,1) M3(0,3) | |abierta|=173 |cerrada|= 93
+It  94 | expand [g=8 h=9 f=17]  R(2,0) carga=- M1(2,1) M2(3,1) M3(0,3) | |abierta|=174 |cerrada|= 94
+It  95 | expand [g=7 h=10 f=17]  R(1,0) carga=- M1(2,0) M2(3,1) M3(0,3) | |abierta|=175 |cerrada|= 95
+It  96 | expand [g=4 h=13 f=17]  R(2,2) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|=175 |cerrada|= 96
+It  97 | expand [g=4 h=13 f=17]  R(3,1) carga=- M1(0,0) M2(2,2) M3(0,3) | |abierta|=176 |cerrada|= 97
+It  98 | expand [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(2,2) M3(0,3) | |abierta|=176 |cerrada|= 98
+It  99 | expand [g=5 h=12 f=17]  R(1,0) carga=- M1(0,0) M2(2,2) M3(0,3) | |abierta|=177 |cerrada|= 99
+It 100 | expand [g=6 h=11 f=17]  R(1,0) carga=M1 M1(1,0) M2(2,2) M3(0,3) | |abierta|=177 |cerrada|=100
+It 101 | expand [g=7 h=10 f=17]  R(2,0) carga=M1 M1(2,0) M2(2,2) M3(0,3) | |abierta|=179 |cerrada|=101
+It 102 | expand [g=8 h=9 f=17]  R(3,0) carga=M1 M1(3,0) M2(2,2) M3(0,3) | |abierta|=183 |cerrada|=102
+It 103 | expand [g=9 h=8 f=17]  R(3,1) carga=M1 M1(3,1) M2(2,2) M3(0,3) | |abierta|=185 |cerrada|=103
+It 104 | expand [g=10 h=7 f=17]  R(3,2) carga=M1 M1(3,2) M2(2,2) M3(0,3) | |abierta|=189 |cerrada|=104
+It 105 | expand [g=11 h=6 f=17]  R(3,3) carga=M1 M1(3,3) M2(2,2) M3(0,3) | |abierta|=191 |cerrada|=105
+It 106 | expand [g=11 h=6 f=17]  R(3,2) carga=- M1(3,3) M2(2,2) M3(0,3) | |abierta|=193 |cerrada|=106
+It 107 | expand [g=10 h=7 f=17]  R(3,1) carga=- M1(3,2) M2(2,2) M3(0,3) | |abierta|=193 |cerrada|=107
+It 108 | expand [g=9 h=8 f=17]  R(3,0) carga=- M1(3,1) M2(2,2) M3(0,3) | |abierta|=194 |cerrada|=108
+It 109 | expand [g=8 h=9 f=17]  R(2,1) carga=M1 M1(2,1) M2(2,2) M3(0,3) | |abierta|=194 |cerrada|=109
+It 110 | expand [g=9 h=8 f=17]  R(2,1) carga=- M1(3,1) M2(2,2) M3(0,3) | |abierta|=195 |cerrada|=110
+It 111 | expand [g=8 h=9 f=17]  R(2,0) carga=- M1(3,0) M2(2,2) M3(0,3) | |abierta|=196 |cerrada|=111
+It 112 | expand [g=8 h=9 f=17]  R(2,0) carga=- M1(2,1) M2(2,2) M3(0,3) | |abierta|=197 |cerrada|=112
+It 113 | expand [g=7 h=10 f=17]  R(1,0) carga=- M1(2,0) M2(2,2) M3(0,3) | |abierta|=198 |cerrada|=113
+It 114 | expand [g=3 h=14 f=17]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(0,3) | |abierta|=198 |cerrada|=114
+It 115 | expand [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(3,0) M3(0,3) | |abierta|=201 |cerrada|=115
+It 116 | expand [g=4 h=13 f=17]  R(2,0) carga=- M1(0,0) M2(2,1) M3(0,3) | |abierta|=202 |cerrada|=116
+It 117 | expand [g=2 h=15 f=17]  R(3,1) carga=- M1(0,0) M2(2,0) M3(0,3) | |abierta|=203 |cerrada|=117
+It 118 | expand [g=3 h=14 f=17]  R(3,0) carga=- M1(0,0) M2(2,0) M3(0,3) | |abierta|=204 |cerrada|=118
+It 119 | expand [g=1 h=16 f=17]  R(3,2) carga=- M1(0,0) M2(2,0) M3(0,3) | |abierta|=203 |cerrada|=119
+It 120 | expand [g=11 h=7 f=18]  R(3,3) carga=M2 M1(0,0) M2(3,3) M3(3,1) | |abierta|=203 |cerrada|=120
+It 121 | expand [g=11 h=7 f=18]  R(3,2) carga=- M1(0,0) M2(2,2) M3(3,1) | |abierta|=205 |cerrada|=121
+It 122 | expand [g=11 h=7 f=18]  R(3,2) carga=- M1(0,0) M2(3,3) M3(3,1) | |abierta|=206 |cerrada|=122
+It 123 | expand [g=11 h=7 f=18]  R(2,3) carga=- M1(3,3) M2(3,1) M3(0,3) | |abierta|=207 |cerrada|=123
+It 124 | expand [g=12 h=6 f=18]  R(1,3) carga=- M1(3,3) M2(3,1) M3(0,3) | |abierta|=208 |cerrada|=124
+It 125 | expand [g=13 h=5 f=18]  R(1,3) carga=M3 M1(3,3) M2(3,1) M3(1,3) | |abierta|=209 |cerrada|=125
+It 126 | expand [g=14 h=4 f=18]  R(2,3) carga=M3 M1(3,3) M2(3,1) M3(2,3) | |abierta|=213 |cerrada|=126
+It 127 | expand [g=15 h=3 f=18]  R(2,2) carga=M3 M1(3,3) M2(3,1) M3(2,2) | |abierta|=215 |cerrada|=127
+It 128 | expand [g=16 h=2 f=18]  R(3,2) carga=M3 M1(3,3) M2(3,1) M3(3,2) | |abierta|=221 |cerrada|=128
+It 129 | expand [g=16 h=2 f=18]  R(2,1) carga=M3 M1(3,3) M2(3,1) M3(2,1) | |abierta|=221 |cerrada|=129
+It 130 | expand [g=16 h=2 f=18]  R(2,2) carga=- M1(3,3) M2(3,1) M3(3,2) | |abierta|=223 |cerrada|=130
+It 131 | expand [g=16 h=2 f=18]  R(2,2) carga=- M1(3,3) M2(3,1) M3(2,1) | |abierta|=225 |cerrada|=131
+It 132 | expand [g=15 h=3 f=18]  R(2,3) carga=- M1(3,3) M2(3,1) M3(2,2) | |abierta|=227 |cerrada|=132
+It 133 | expand [g=14 h=4 f=18]  R(1,2) carga=M3 M1(3,3) M2(3,1) M3(1,2) | |abierta|=228 |cerrada|=133
+It 134 | expand [g=15 h=3 f=18]  R(1,2) carga=- M1(3,3) M2(3,1) M3(2,2) | |abierta|=231 |cerrada|=134
+It 135 | expand [g=14 h=4 f=18]  R(1,3) carga=- M1(3,3) M2(3,1) M3(2,3) | |abierta|=232 |cerrada|=135
+It 136 | expand [g=14 h=4 f=18]  R(1,3) carga=- M1(3,3) M2(3,1) M3(1,2) | |abierta|=233 |cerrada|=136
+It 137 | expand [g=11 h=7 f=18]  R(2,1) carga=- M1(3,2) M2(3,1) M3(0,3) | |abierta|=234 |cerrada|=137
+It 138 | expand [g=11 h=7 f=18]  R(3,2) carga=- M1(2,3) M2(3,1) M3(0,3) | |abierta|=235 |cerrada|=138
+It 139 | expand [g=12 h=6 f=18]  R(3,2) carga=M2 M1(2,3) M2(3,2) M3(0,3) | |abierta|=236 |cerrada|=139
+It 140 | expand [g=11 h=7 f=18]  R(2,1) carga=- M1(2,3) M2(3,1) M3(0,3) | |abierta|=240 |cerrada|=140
+It 141 | expand [g=11 h=7 f=18]  R(2,1) carga=- M1(3,2) M2(2,2) M3(0,3) | |abierta|=241 |cerrada|=141
+It 142 | expand [g=10 h=8 f=18]  R(1,2) carga=M2 M1(0,0) M2(1,2) M3(3,1) | |abierta|=242 |cerrada|=142
+It 143 | expand [g=11 h=7 f=18]  R(1,2) carga=- M1(0,0) M2(2,2) M3(3,1) | |abierta|=246 |cerrada|=143
+It 144 | expand [g=10 h=8 f=18]  R(2,3) carga=M2 M1(0,0) M2(2,3) M3(3,1) | |abierta|=247 |cerrada|=144
+It 145 | expand [g=11 h=7 f=18]  R(2,3) carga=- M1(0,0) M2(3,3) M3(3,1) | |abierta|=250 |cerrada|=145
+It 146 | expand [g=11 h=7 f=18]  R(2,3) carga=- M1(0,0) M2(2,2) M3(3,1) | |abierta|=251 |cerrada|=146
+It 147 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(0,0) M2(1,2) M3(3,1) | |abierta|=252 |cerrada|=147
+It 148 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(0,0) M2(2,1) M3(3,1) | |abierta|=254 |cerrada|=148
+It 149 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(0,0) M2(2,3) M3(3,1) | |abierta|=256 |cerrada|=149
+It 150 | expand [g=10 h=8 f=18]  R(2,0) carga=- M1(0,0) M2(2,2) M3(3,1) | |abierta|=258 |cerrada|=150
+It 151 | expand [g=11 h=7 f=18]  R(1,0) carga=- M1(0,0) M2(2,2) M3(3,1) | |abierta|=259 |cerrada|=151
+It 152 | expand [g=12 h=6 f=18]  R(1,0) carga=M1 M1(1,0) M2(2,2) M3(3,1) | |abierta|=259 |cerrada|=152
+It 153 | expand [g=13 h=5 f=18]  R(2,0) carga=M1 M1(2,0) M2(2,2) M3(3,1) | |abierta|=261 |cerrada|=153
+It 154 | expand [g=14 h=4 f=18]  R(3,0) carga=M1 M1(3,0) M2(2,2) M3(3,1) | |abierta|=265 |cerrada|=154
+It 155 | expand [g=14 h=4 f=18]  R(2,1) carga=M1 M1(2,1) M2(2,2) M3(3,1) | |abierta|=265 |cerrada|=155
+It 156 | expand [g=14 h=4 f=18]  R(2,0) carga=- M1(3,0) M2(2,2) M3(3,1) | |abierta|=265 |cerrada|=156
+It 157 | expand [g=14 h=4 f=18]  R(2,0) carga=- M1(2,1) M2(2,2) M3(3,1) | |abierta|=266 |cerrada|=157
+It 158 | expand [g=13 h=5 f=18]  R(1,0) carga=- M1(2,0) M2(2,2) M3(3,1) | |abierta|=267 |cerrada|=158
+It 159 | expand [g=10 h=8 f=18]  R(2,1) carga=M3 M1(0,0) M2(2,2) M3(2,1) | |abierta|=267 |cerrada|=159
+It 160 | expand [g=11 h=7 f=18]  R(3,1) carga=M3 M1(0,0) M2(2,2) M3(3,1) | |abierta|=269 |cerrada|=160
+It 161 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(0,0) M2(3,1) M3(3,2) | |abierta|=273 |cerrada|=161
+It 162 | expand [g=10 h=8 f=18]  R(3,1) carga=- M1(0,0) M2(2,2) M3(3,2) | |abierta|=275 |cerrada|=162
+It 163 | expand [g=9 h=9 f=18]  R(2,0) carga=M2 M1(0,0) M2(2,0) M3(3,1) | |abierta|=275 |cerrada|=163
+It 164 | expand [g=10 h=8 f=18]  R(3,0) carga=M2 M1(0,0) M2(3,0) M3(3,1) | |abierta|=279 |cerrada|=164
+It 165 | expand [g=10 h=8 f=18]  R(2,0) carga=- M1(0,0) M2(3,0) M3(3,1) | |abierta|=279 |cerrada|=165
+It 166 | expand [g=10 h=8 f=18]  R(2,0) carga=- M1(0,0) M2(2,1) M3(3,1) | |abierta|=280 |cerrada|=166
+It 167 | expand [g=9 h=9 f=18]  R(2,1) carga=- M1(3,0) M2(3,1) M3(0,3) | |abierta|=281 |cerrada|=167
+It 168 | expand [g=9 h=9 f=18]  R(3,0) carga=- M1(2,1) M2(3,1) M3(0,3) | |abierta|=282 |cerrada|=168
+It 169 | expand [g=9 h=9 f=18]  R(2,1) carga=- M1(3,0) M2(2,2) M3(0,3) | |abierta|=282 |cerrada|=169
+It 170 | expand [g=8 h=10 f=18]  R(3,0) carga=M3 M1(0,0) M2(2,0) M3(3,0) | |abierta|=282 |cerrada|=170
+It 171 | expand [g=9 h=9 f=18]  R(3,0) carga=- M1(0,0) M2(2,0) M3(3,1) | |abierta|=282 |cerrada|=171
+It 172 | expand [g=8 h=10 f=18]  R(3,1) carga=- M1(0,0) M2(2,0) M3(2,1) | |abierta|=281 |cerrada|=172
+It 173 | expand [g=8 h=10 f=18]  R(3,1) carga=- M1(0,0) M2(2,0) M3(3,0) | |abierta|=282 |cerrada|=173
+It 174 | expand [g=8 h=10 f=18]  R(3,1) carga=- M1(0,0) M2(2,0) M3(3,2) | |abierta|=283 |cerrada|=174
+It 175 | expand [g=8 h=10 f=18]  R(2,2) carga=- M1(0,0) M2(2,0) M3(3,1) | |abierta|=283 |cerrada|=175
+It 176 | expand [g=7 h=11 f=18]  R(3,2) carga=- M1(0,0) M2(2,0) M3(2,2) | |abierta|=283 |cerrada|=176
+It 177 | expand [g=7 h=11 f=18]  R(3,2) carga=- M1(0,0) M2(2,0) M3(3,1) | |abierta|=284 |cerrada|=177
+It 178 | expand [g=7 h=11 f=18]  R(3,2) carga=- M1(0,0) M2(2,0) M3(3,3) | |abierta|=284 |cerrada|=178
+It 179 | expand [g=7 h=11 f=18]  R(2,1) carga=- M1(0,0) M2(2,0) M3(2,2) | |abierta|=285 |cerrada|=179
+It 180 | expand [g=8 h=10 f=18]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(2,2) | |abierta|=286 |cerrada|=180
+It 181 | expand [g=9 h=9 f=18]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(2,2) | |abierta|=288 |cerrada|=181
+It 182 | expand [g=10 h=8 f=18]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(2,2) | |abierta|=292 |cerrada|=182
+It 183 | expand [g=9 h=9 f=18]  R(2,1) carga=- M1(0,0) M2(3,1) M3(2,2) | |abierta|=294 |cerrada|=183
+It 184 | expand [g=10 h=8 f=18]  R(2,1) carga=M3 M1(0,0) M2(3,1) M3(2,1) | |abierta|=295 |cerrada|=184
+It 185 | expand [g=7 h=11 f=18]  R(1,2) carga=- M1(0,0) M2(2,0) M3(3,2) | |abierta|=297 |cerrada|=185
+It 186 | expand [g=7 h=11 f=18]  R(2,3) carga=- M1(0,0) M2(2,0) M3(3,2) | |abierta|=298 |cerrada|=186
+It 187 | expand [g=7 h=11 f=18]  R(1,2) carga=- M1(0,0) M2(2,0) M3(2,1) | |abierta|=298 |cerrada|=187
+It 188 | expand [g=7 h=11 f=18]  R(3,2) carga=- M1(0,0) M2(2,0) M3(2,1) | |abierta|=299 |cerrada|=188
+It 189 | expand [g=7 h=11 f=18]  R(2,3) carga=- M1(0,0) M2(2,0) M3(2,1) | |abierta|=299 |cerrada|=189
+It 190 | expand [g=6 h=12 f=18]  R(2,2) carga=- M1(0,0) M2(2,0) M3(1,2) | |abierta|=298 |cerrada|=190
+It 191 | expand [g=6 h=12 f=18]  R(2,2) carga=- M1(0,0) M2(2,0) M3(2,3) | |abierta|=300 |cerrada|=191
+It 192 | expand [g=6 h=12 f=18]  R(0,2) carga=- M1(0,0) M2(2,0) M3(2,2) | |abierta|=302 |cerrada|=192
+It 193 | expand [g=6 h=12 f=18]  R(1,3) carga=- M1(0,0) M2(2,0) M3(2,2) | |abierta|=302 |cerrada|=193
+It 194 | expand [g=6 h=12 f=18]  R(3,3) carga=- M1(0,0) M2(2,0) M3(2,3) | |abierta|=302 |cerrada|=194
+It 195 | expand [g=6 h=12 f=18]  R(1,3) carga=- M1(0,0) M2(2,0) M3(3,3) | |abierta|=302 |cerrada|=195
+It 196 | expand [g=6 h=12 f=18]  R(2,2) carga=- M1(0,0) M2(2,0) M3(3,3) | |abierta|=303 |cerrada|=196
+It 197 | expand [g=7 h=11 f=18]  R(2,1) carga=- M1(0,0) M2(2,0) M3(3,3) | |abierta|=304 |cerrada|=197
+It 198 | expand [g=8 h=10 f=18]  R(2,1) carga=M2 M1(0,0) M2(2,1) M3(3,3) | |abierta|=305 |cerrada|=198
+It 199 | expand [g=9 h=9 f=18]  R(3,1) carga=M2 M1(0,0) M2(3,1) M3(3,3) | |abierta|=309 |cerrada|=199
+It 200 | expand [g=10 h=8 f=18]  R(3,2) carga=M2 M1(0,0) M2(3,2) M3(3,3) | |abierta|=313 |cerrada|=200
+It 201 | expand [g=9 h=9 f=18]  R(2,2) carga=M2 M1(0,0) M2(2,2) M3(3,3) | |abierta|=315 |cerrada|=201
+It 202 | expand [g=9 h=9 f=18]  R(2,1) carga=- M1(0,0) M2(3,1) M3(3,3) | |abierta|=320 |cerrada|=202
+It 203 | expand [g=9 h=9 f=18]  R(2,1) carga=- M1(0,0) M2(2,2) M3(3,3) | |abierta|=321 |cerrada|=203
+It 204 | expand [g=6 h=12 f=18]  R(3,3) carga=- M1(0,0) M2(2,0) M3(2,2) | |abierta|=321 |cerrada|=204
+It 205 | expand [g=6 h=12 f=18]  R(0,2) carga=- M1(0,0) M2(2,2) M3(0,3) | |abierta|=320 |cerrada|=205
+It 206 | expand [g=7 h=11 f=18]  R(0,2) carga=M3 M1(0,0) M2(2,2) M3(0,2) | |abierta|=320 |cerrada|=206
+It 207 | expand [g=8 h=10 f=18]  R(1,2) carga=M3 M1(0,0) M2(2,2) M3(1,2) | |abierta|=322 |cerrada|=207
+It 208 | expand [g=8 h=10 f=18]  R(0,2) carga=- M1(0,0) M2(2,2) M3(1,2) | |abierta|=324 |cerrada|=208
+It 209 | expand [g=6 h=12 f=18]  R(1,3) carga=- M1(0,0) M2(2,2) M3(0,3) | |abierta|=324 |cerrada|=209
+It 210 | expand [g=7 h=11 f=18]  R(1,3) carga=M3 M1(0,0) M2(2,2) M3(1,3) | |abierta|=324 |cerrada|=210
+It 211 | expand [g=8 h=10 f=18]  R(2,3) carga=M3 M1(0,0) M2(2,2) M3(2,3) | |abierta|=327 |cerrada|=211
+It 212 | expand [g=9 h=9 f=18]  R(3,3) carga=M3 M1(0,0) M2(2,2) M3(3,3) | |abierta|=329 |cerrada|=212
+It 213 | expand [g=10 h=8 f=18]  R(3,2) carga=M3 M1(0,0) M2(2,2) M3(3,2) | |abierta|=331 |cerrada|=213
+It 214 | expand [g=10 h=8 f=18]  R(3,3) carga=- M1(0,0) M2(2,2) M3(3,2) | |abierta|=331 |cerrada|=214
+It 215 | expand [g=9 h=9 f=18]  R(2,3) carga=- M1(0,0) M2(2,2) M3(3,3) | |abierta|=331 |cerrada|=215
+It 216 | expand [g=8 h=10 f=18]  R(1,3) carga=- M1(0,0) M2(2,2) M3(2,3) | |abierta|=332 |cerrada|=216
+It 217 | expand [g=8 h=10 f=18]  R(1,3) carga=- M1(0,0) M2(2,2) M3(1,2) | |abierta|=333 |cerrada|=217
+It 218 | expand [g=6 h=12 f=18]  R(1,3) carga=- M1(0,0) M2(3,3) M3(0,3) | |abierta|=334 |cerrada|=218
+It 219 | expand [g=7 h=11 f=18]  R(1,3) carga=M3 M1(0,0) M2(3,3) M3(1,3) | |abierta|=335 |cerrada|=219
+It 220 | expand [g=8 h=10 f=18]  R(2,3) carga=M3 M1(0,0) M2(3,3) M3(2,3) | |abierta|=339 |cerrada|=220
+It 221 | expand [g=9 h=9 f=18]  R(2,2) carga=M3 M1(0,0) M2(3,3) M3(2,2) | |abierta|=341 |cerrada|=221
+It 222 | expand [g=10 h=8 f=18]  R(3,2) carga=M3 M1(0,0) M2(3,3) M3(3,2) | |abierta|=347 |cerrada|=222
+It 223 | expand [g=11 h=7 f=18]  R(3,1) carga=M3 M1(0,0) M2(3,3) M3(3,1) | |abierta|=348 |cerrada|=223
+It 224 | expand [g=10 h=8 f=18]  R(2,1) carga=M3 M1(0,0) M2(3,3) M3(2,1) | |abierta|=352 |cerrada|=224
+It 225 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(0,0) M2(3,3) M3(3,2) | |abierta|=355 |cerrada|=225
+It 226 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(0,0) M2(3,3) M3(2,1) | |abierta|=357 |cerrada|=226
+It 227 | expand [g=9 h=9 f=18]  R(2,3) carga=- M1(0,0) M2(3,3) M3(2,2) | |abierta|=359 |cerrada|=227
+It 228 | expand [g=8 h=10 f=18]  R(1,2) carga=M3 M1(0,0) M2(3,3) M3(1,2) | |abierta|=360 |cerrada|=228
+It 229 | expand [g=9 h=9 f=18]  R(1,2) carga=- M1(0,0) M2(3,3) M3(2,2) | |abierta|=363 |cerrada|=229
+It 230 | expand [g=8 h=10 f=18]  R(1,3) carga=- M1(0,0) M2(3,3) M3(2,3) | |abierta|=364 |cerrada|=230
+It 231 | expand [g=8 h=10 f=18]  R(1,3) carga=- M1(0,0) M2(3,3) M3(1,2) | |abierta|=365 |cerrada|=231
+It 232 | expand [g=5 h=13 f=18]  R(1,2) carga=- M1(0,0) M2(2,0) M3(0,2) | |abierta|=364 |cerrada|=232
+It 233 | expand [g=5 h=13 f=18]  R(1,2) carga=- M1(0,0) M2(2,0) M3(1,3) | |abierta|=365 |cerrada|=233
+It 234 | expand [g=5 h=13 f=18]  R(0,3) carga=- M1(0,0) M2(2,0) M3(1,2) | |abierta|=366 |cerrada|=234
+It 235 | expand [g=5 h=13 f=18]  R(2,3) carga=- M1(0,0) M2(2,0) M3(1,3) | |abierta|=365 |cerrada|=235
+It 236 | expand [g=5 h=13 f=18]  R(0,3) carga=- M1(0,0) M2(2,0) M3(2,3) | |abierta|=366 |cerrada|=236
+It 237 | expand [g=5 h=13 f=18]  R(1,2) carga=- M1(0,0) M2(2,0) M3(2,3) | |abierta|=366 |cerrada|=237
+It 238 | expand [g=5 h=13 f=18]  R(2,3) carga=- M1(0,0) M2(2,0) M3(1,2) | |abierta|=365 |cerrada|=238
+It 239 | expand [g=5 h=13 f=18]  R(2,1) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=365 |cerrada|=239
+It 240 | expand [g=6 h=12 f=18]  R(2,0) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=366 |cerrada|=240
+It 241 | expand [g=7 h=11 f=18]  R(1,0) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=367 |cerrada|=241
+It 242 | expand [g=8 h=10 f=18]  R(1,0) carga=M1 M1(1,0) M2(3,2) M3(0,3) | |abierta|=367 |cerrada|=242
+It 243 | expand [g=9 h=9 f=18]  R(2,0) carga=M1 M1(2,0) M2(3,2) M3(0,3) | |abierta|=369 |cerrada|=243
+It 244 | expand [g=10 h=8 f=18]  R(3,0) carga=M1 M1(3,0) M2(3,2) M3(0,3) | |abierta|=373 |cerrada|=244
+It 245 | expand [g=11 h=7 f=18]  R(3,1) carga=M1 M1(3,1) M2(3,2) M3(0,3) | |abierta|=375 |cerrada|=245
+It 246 | expand [g=11 h=7 f=18]  R(3,0) carga=- M1(3,1) M2(3,2) M3(0,3) | |abierta|=377 |cerrada|=246
+It 247 | expand [g=10 h=8 f=18]  R(2,1) carga=M1 M1(2,1) M2(3,2) M3(0,3) | |abierta|=377 |cerrada|=247
+It 248 | expand [g=11 h=7 f=18]  R(2,2) carga=M1 M1(2,2) M2(3,2) M3(0,3) | |abierta|=380 |cerrada|=248
+It 249 | expand [g=12 h=6 f=18]  R(2,3) carga=M1 M1(2,3) M2(3,2) M3(0,3) | |abierta|=384 |cerrada|=249
+It 250 | expand [g=13 h=5 f=18]  R(3,3) carga=M1 M1(3,3) M2(3,2) M3(0,3) | |abierta|=388 |cerrada|=250
+It 251 | expand [g=12 h=6 f=18]  R(2,2) carga=- M1(2,3) M2(3,2) M3(0,3) | |abierta|=388 |cerrada|=251
+It 252 | expand [g=11 h=7 f=18]  R(2,1) carga=- M1(3,1) M2(3,2) M3(0,3) | |abierta|=390 |cerrada|=252
+It 253 | expand [g=11 h=7 f=18]  R(2,1) carga=- M1(2,2) M2(3,2) M3(0,3) | |abierta|=391 |cerrada|=253
+It 254 | expand [g=10 h=8 f=18]  R(2,0) carga=- M1(3,0) M2(3,2) M3(0,3) | |abierta|=392 |cerrada|=254
+It 255 | expand [g=10 h=8 f=18]  R(2,0) carga=- M1(2,1) M2(3,2) M3(0,3) | |abierta|=393 |cerrada|=255
+It 256 | expand [g=9 h=9 f=18]  R(1,0) carga=- M1(2,0) M2(3,2) M3(0,3) | |abierta|=394 |cerrada|=256
+It 257 | expand [g=5 h=13 f=18]  R(1,2) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|=394 |cerrada|=257
+It 258 | expand [g=6 h=12 f=18]  R(0,2) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|=395 |cerrada|=258
+It 259 | expand [g=7 h=11 f=18]  R(0,2) carga=M3 M1(0,0) M2(3,1) M3(0,2) | |abierta|=395 |cerrada|=259
+It 260 | expand [g=8 h=10 f=18]  R(1,2) carga=M3 M1(0,0) M2(3,1) M3(1,2) | |abierta|=397 |cerrada|=260
+It 261 | expand [g=9 h=9 f=18]  R(2,2) carga=M3 M1(0,0) M2(3,1) M3(2,2) | |abierta|=401 |cerrada|=261
+It 262 | expand [g=10 h=8 f=18]  R(3,2) carga=M3 M1(0,0) M2(3,1) M3(3,2) | |abierta|=405 |cerrada|=262
+It 263 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(0,0) M2(3,1) M3(2,1) | |abierta|=407 |cerrada|=263
+It 264 | expand [g=9 h=9 f=18]  R(1,2) carga=- M1(0,0) M2(3,1) M3(2,2) | |abierta|=409 |cerrada|=264
+It 265 | expand [g=8 h=10 f=18]  R(0,2) carga=- M1(0,0) M2(3,1) M3(1,2) | |abierta|=410 |cerrada|=265
+It 266 | expand [g=6 h=12 f=18]  R(1,3) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|=410 |cerrada|=266
+It 267 | expand [g=7 h=11 f=18]  R(1,3) carga=M3 M1(0,0) M2(3,1) M3(1,3) | |abierta|=411 |cerrada|=267
+It 268 | expand [g=8 h=10 f=18]  R(2,3) carga=M3 M1(0,0) M2(3,1) M3(2,3) | |abierta|=414 |cerrada|=268
+It 269 | expand [g=9 h=9 f=18]  R(3,3) carga=M3 M1(0,0) M2(3,1) M3(3,3) | |abierta|=417 |cerrada|=269
+It 270 | expand [g=10 h=8 f=18]  R(3,3) carga=- M1(0,0) M2(3,1) M3(3,2) | |abierta|=418 |cerrada|=270
+It 271 | expand [g=9 h=9 f=18]  R(2,3) carga=- M1(0,0) M2(3,1) M3(3,3) | |abierta|=418 |cerrada|=271
+It 272 | expand [g=9 h=9 f=18]  R(2,3) carga=- M1(0,0) M2(3,1) M3(2,2) | |abierta|=419 |cerrada|=272
+It 273 | expand [g=8 h=10 f=18]  R(1,3) carga=- M1(0,0) M2(3,1) M3(2,3) | |abierta|=420 |cerrada|=273
+It 274 | expand [g=8 h=10 f=18]  R(1,3) carga=- M1(0,0) M2(3,1) M3(1,2) | |abierta|=421 |cerrada|=274
+It 275 | expand [g=5 h=13 f=18]  R(2,3) carga=- M1(0,0) M2(3,1) M3(0,3) | |abierta|=422 |cerrada|=275
+It 276 | expand [g=5 h=13 f=18]  R(1,0) carga=- M1(0,0) M2(3,0) M3(0,3) | |abierta|=422 |cerrada|=276
+It 277 | expand [g=6 h=12 f=18]  R(1,0) carga=M1 M1(1,0) M2(3,0) M3(0,3) | |abierta|=422 |cerrada|=277
+It 278 | expand [g=7 h=11 f=18]  R(2,0) carga=M1 M1(2,0) M2(3,0) M3(0,3) | |abierta|=424 |cerrada|=278
+It 279 | expand [g=8 h=10 f=18]  R(2,1) carga=M1 M1(2,1) M2(3,0) M3(0,3) | |abierta|=426 |cerrada|=279
+It 280 | expand [g=9 h=9 f=18]  R(3,1) carga=M1 M1(3,1) M2(3,0) M3(0,3) | |abierta|=430 |cerrada|=280
+It 281 | expand [g=10 h=8 f=18]  R(3,2) carga=M1 M1(3,2) M2(3,0) M3(0,3) | |abierta|=432 |cerrada|=281
+It 282 | expand [g=11 h=7 f=18]  R(3,3) carga=M1 M1(3,3) M2(3,0) M3(0,3) | |abierta|=436 |cerrada|=282
+It 283 | expand [g=10 h=8 f=18]  R(3,1) carga=- M1(3,2) M2(3,0) M3(0,3) | |abierta|=438 |cerrada|=283
+It 284 | expand [g=11 h=7 f=18]  R(3,1) carga=M2 M1(3,2) M2(3,1) M3(0,3) | |abierta|=439 |cerrada|=284
+It 285 | expand [g=9 h=9 f=18]  R(2,2) carga=M1 M1(2,2) M2(3,0) M3(0,3) | |abierta|=441 |cerrada|=285
+It 286 | expand [g=10 h=8 f=18]  R(2,3) carga=M1 M1(2,3) M2(3,0) M3(0,3) | |abierta|=446 |cerrada|=286
+It 287 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(3,2) M2(3,0) M3(0,3) | |abierta|=449 |cerrada|=287
+It 288 | expand [g=10 h=8 f=18]  R(2,2) carga=- M1(2,3) M2(3,0) M3(0,3) | |abierta|=451 |cerrada|=288
+It 289 | expand [g=9 h=9 f=18]  R(2,1) carga=- M1(3,1) M2(3,0) M3(0,3) | |abierta|=453 |cerrada|=289
+It 290 | expand [g=9 h=9 f=18]  R(2,1) carga=- M1(2,2) M2(3,0) M3(0,3) | |abierta|=454 |cerrada|=290
+It 291 | expand [g=8 h=10 f=18]  R(2,0) carga=- M1(2,1) M2(3,0) M3(0,3) | |abierta|=455 |cerrada|=291
+It 292 | expand [g=7 h=11 f=18]  R(1,0) carga=- M1(2,0) M2(3,0) M3(0,3) | |abierta|=456 |cerrada|=292
+It 293 | expand [g=5 h=13 f=18]  R(1,0) carga=- M1(0,0) M2(2,1) M3(0,3) | |abierta|=456 |cerrada|=293
+It 294 | expand [g=6 h=12 f=18]  R(1,0) carga=M1 M1(1,0) M2(2,1) M3(0,3) | |abierta|=456 |cerrada|=294
+It 295 | expand [g=7 h=11 f=18]  R(2,0) carga=M1 M1(2,0) M2(2,1) M3(0,3) | |abierta|=458 |cerrada|=295
+It 296 | expand [g=8 h=10 f=18]  R(3,0) carga=M1 M1(3,0) M2(2,1) M3(0,3) | |abierta|=460 |cerrada|=296
+It 297 | expand [g=9 h=9 f=18]  R(3,1) carga=M1 M1(3,1) M2(2,1) M3(0,3) | |abierta|=462 |cerrada|=297
+It 298 | expand [g=10 h=8 f=18]  R(3,2) carga=M1 M1(3,2) M2(2,1) M3(0,3) | |abierta|=464 |cerrada|=298
+It 299 | expand [g=11 h=7 f=18]  R(3,3) carga=M1 M1(3,3) M2(2,1) M3(0,3) | |abierta|=468 |cerrada|=299
+It 300 | expand [g=10 h=8 f=18]  R(3,1) carga=- M1(3,2) M2(2,1) M3(0,3) | |abierta|=470 |cerrada|=300
+It 301 | expand [g=9 h=9 f=18]  R(3,0) carga=- M1(3,1) M2(2,1) M3(0,3) | |abierta|=470 |cerrada|=301
+It 302 | expand [g=8 h=10 f=18]  R(2,0) carga=- M1(3,0) M2(2,1) M3(0,3) | |abierta|=470 |cerrada|=302
+It 303 | expand [g=7 h=11 f=18]  R(1,0) carga=- M1(2,0) M2(2,1) M3(0,3) | |abierta|=471 |cerrada|=303
+It 304 | expand [g=4 h=14 f=18]  R(3,1) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=471 |cerrada|=304
+It 305 | expand [g=5 h=13 f=18]  R(3,0) carga=- M1(0,0) M2(3,2) M3(0,3) | |abierta|=471 |cerrada|=305
+It 306 | expand [g=4 h=14 f=18]  R(0,3) carga=M3 M1(0,0) M2(2,0) M3(0,3) | |abierta|=470 |cerrada|=306
+It 307 | expand [g=5 h=13 f=18]  R(0,3) carga=- M1(0,0) M2(2,0) M3(1,3) | |abierta|=471 |cerrada|=307
+It 308 | expand [g=5 h=13 f=18]  R(0,3) carga=- M1(0,0) M2(2,0) M3(0,2) | |abierta|=471 |cerrada|=308
+It 309 | expand [g=2 h=16 f=18]  R(3,3) carga=- M1(0,0) M2(2,0) M3(0,3) | |abierta|=469 |cerrada|=309
+It 310 | expand [g=17 h=2 f=19]  R(2,1) carga=- M1(3,3) M2(3,1) M3(3,2) | |abierta|=467 |cerrada|=310
+It 311 | expand [g=17 h=2 f=19]  R(3,2) carga=- M1(3,3) M2(3,1) M3(2,1) | |abierta|=468 |cerrada|=311
+It 312 | expand [g=18 h=1 f=19]  R(3,2) carga=M2 M1(3,3) M2(3,2) M3(2,1) | |abierta|=469 |cerrada|=312
+It 313 | expand [g=15 h=4 f=19]  R(2,1) carga=- M1(3,0) M2(2,2) M3(3,1) | |abierta|=471 |cerrada|=313
+It 314 | expand [g=13 h=6 f=19]  R(2,2) carga=M2 M1(3,3) M2(2,2) M3(0,3) | |abierta|=472 |cerrada|=314
+It 315 | expand [g=13 h=6 f=19]  R(3,1) carga=M2 M1(3,3) M2(3,1) M3(0,3) | |abierta|=478 |cerrada|=315
+It 316 | expand [g=13 h=6 f=19]  R(2,3) carga=- M1(3,3) M2(3,2) M3(0,3) | |abierta|=481 |cerrada|=316
+It 317 | expand [g=14 h=5 f=19]  R(1,3) carga=- M1(3,3) M2(3,2) M3(0,3) | |abierta|=482 |cerrada|=317
+It 318 | expand [g=15 h=4 f=19]  R(1,3) carga=M3 M1(3,3) M2(3,2) M3(1,3) | |abierta|=483 |cerrada|=318
+It 319 | expand [g=16 h=3 f=19]  R(2,3) carga=M3 M1(3,3) M2(3,2) M3(2,3) | |abierta|=487 |cerrada|=319
+It 320 | expand [g=17 h=2 f=19]  R(2,2) carga=M3 M1(3,3) M2(3,2) M3(2,2) | |abierta|=489 |cerrada|=320
+It 321 | expand [g=18 h=1 f=19]  R(2,1) carga=M3 M1(3,3) M2(3,2) M3(2,1) | |abierta|=493 |cerrada|=321
+It 322 | expand [g=19 h=0 f=19]  R(3,1) carga=M3 M1(3,3) M2(3,2) M3(3,1) | |abierta|=497 |cerrada|=322
+It 323 | expand [g=19 h=0 f=19]  R(2,1) carga=- M1(3,3) M2(3,2) M3(3,1) | |abierta|=499 |cerrada|=323
+
+============================================================
+  RESULTADO
+============================================================
+  Iteraciones (nodos expandidos): 323
+  Nodos generados:                836
+  Coste total (g del objetivo):   19
+  Longitud de la secuencia:       19
+
+Secuencia de acciones (estado inicial -> objetivo):
+   1. mover R fila2 columna1
+   2. cargar R M2 fila2 columna0
+   3. mover R fila2 columna2
+   4. descargar R M2 fila3 columna2
+   5. mover R fila2 columna1
+   6. mover R fila2 columna0
+   7. mover R fila1 columna0
+   8. cargar R M1 fila0 columna0
+   9. mover R fila2 columna0
+  10. mover R fila2 columna1
+  11. mover R fila2 columna2
+  12. mover R fila2 columna3
+  13. descargar R M1 fila3 columna3
+  14. mover R fila1 columna3
+  15. cargar R M3 fila0 columna3
+  16. mover R fila2 columna3
+  17. mover R fila2 columna2
+  18. mover R fila2 columna1
+  19. descargar R M3 fila3 columna1

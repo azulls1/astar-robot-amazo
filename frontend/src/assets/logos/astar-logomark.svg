@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="A*">
+  <title>A*</title>
+  <text x="32" y="46" text-anchor="middle"
+        font-family="'Sora','Helvetica Neue',Arial,sans-serif"
+        font-size="40" font-weight="700"
+        fill="currentColor">
+    A<tspan font-size="28" dy="-4">*</tspan>
+  </text>
+</svg>

@@ -1,0 +1,209 @@
+@import "tailwindcss";
+@import "./forest/forest.css";
+
+/* ─── Sidebar tipográfico — estándar de productos modernos (Linear/Vercel/Notion) ─── */
+/* Sidebar width: 240px (estándar de la industria; mismo que el DS) */
+.sidebar-link {
+  font-size: 14px;
+  padding: 8px 12px;
+  gap: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.sidebar-link__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke-width: 1.75;
+}
+.sidebar-link.active {
+  font-weight: 600;
+}
+.sidebar-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted, #5B7065);
+  padding: 0 12px;
+  margin-bottom: 6px;
+}
+
+/* ─── Navbar — alto estándar 60px ─── */
+.navbar {
+  min-height: 60px;
+}
+.navbar .btn-icon {
+  width: 36px;
+  height: 36px;
+}
+.navbar .btn-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.navbar .btn-secondary {
+  font-size: 13px;
+  padding: 8px 14px;
+}
+.navbar .btn-secondary svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ─── Tarjetas clickeables (abren modal de info enriquecida) ─── */
+.clickable {
+  cursor: pointer;
+  position: relative;
+  transition: transform 200ms var(--ease-apple),
+    box-shadow 200ms var(--ease-apple),
+    border-color 200ms var(--ease-apple);
+}
+.clickable:hover {
+  transform: translateY(-2px);
+}
+.clickable:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+.clickable::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--forest-100);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2304202C' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 6 15 12 9 18'/></svg>");
+  background-size: 10px 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-apple);
+}
+.clickable:hover::after,
+.clickable:focus-visible::after {
+  opacity: 1;
+}
+/* Cuando .clickable se aplica a un <tr>, ocultar el indicador y solo dar
+   color de fondo en hover — el chevron en una fila sería ruido visual */
+tr.clickable::after {
+  display: none;
+}
+tr.clickable {
+  cursor: pointer;
+}
+tr.clickable:hover {
+  background: rgba(4, 32, 44, 0.04);
+  transform: none;
+}
+
+/* ─── App footer (patrón del DS · 04-navigation.md) ─── */
+.app-footer {
+  border-top: 1px solid var(--color-border-subtle);
+  padding: 22px 24px;
+  text-align: center;
+  background: var(--color-bg-page, #F7F8F7);
+}
+.app-footer__main {
+  font-size: 13px;
+  color: var(--forest-700, #1A3036);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+.app-footer__credits {
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--color-text-muted, #7D8F84);
+  line-height: 1.55;
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tablero del solver — usa la paleta Forest */
+.celda {
+  width: 5.25rem;
+  height: 5.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--color-bg-surface);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  color: var(--color-text-primary);
+  position: relative;
+  transition: background 200ms var(--ease-apple);
+}
+.celda.pared {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--forest-300),
+    var(--forest-300) 6px,
+    var(--forest-500) 6px,
+    var(--forest-500) 12px
+  );
+  color: transparent;
+}
+.celda.con-robot {
+  background: var(--forest-900);
+  color: white;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 2px var(--forest-700);
+}
+.celda.con-inv {
+  background: var(--forest-100);
+  color: var(--forest-900);
+}
+/* Variante grande para el tablero principal */
+.celda--lg {
+  width: 6.25rem;
+  height: 6.25rem;
+  font-size: 1rem;
+}
+@media (max-width: 640px) {
+  .celda,
+  .celda--lg {
+    width: 4.25rem;
+    height: 4.25rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Coordenadas alrededor del tablero */
+.coord-axis {
+  display: flex;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--color-text-muted, #6b7575);
+  font-weight: 600;
+}
+.coord-axis--top {
+  padding-left: 1.5rem;
+}
+.coord-axis--top span,
+.coord-axis--bottom span {
+  width: 6.25rem;
+  text-align: center;
+}
+.coord-axis--left {
+  flex-direction: column;
+  width: 1.5rem;
+}
+.coord-axis--left span {
+  height: 6.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 640px) {
+  .coord-axis--top span,
+  .coord-axis--bottom span {
+    width: 4.25rem;
+  }
+  .coord-axis--left span {
+    height: 4.25rem;
+  }
+}

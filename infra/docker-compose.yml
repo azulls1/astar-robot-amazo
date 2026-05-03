@@ -1,0 +1,64 @@
+# Docker Compose para desarrollo local.
+# Levanta backend (FastAPI), worker (Celery), broker (Redis) y frontend (Angular build).
+#
+# Uso:
+#   docker compose -f infra/docker-compose.yml --env-file ../.env up --build
+#
+# El backend queda en http://localhost:8000 y el frontend en http://localhost:4200.
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: astar-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  backend:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.backend
+    container_name: astar-backend
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      CORS_ORIGINS: http://localhost:4200,http://127.0.0.1:4200
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../salidas:/app/salidas
+      - ../memoria:/app/memoria
+      - ../entregables:/app/entregables
+
+  worker:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.worker
+    container_name: astar-worker
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.frontend
+    container_name: astar-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+
+volumes:
+  redis-data:
