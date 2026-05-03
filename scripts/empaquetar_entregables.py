@@ -1,6 +1,7 @@
 """Empaqueta los entregables académicos en ZIPs descargables.
 
-Genera dos archivos en `entregables/`:
+Genera tres archivos en `entregables/`:
+    - entrega_simple.zip      .py del solver + tests + memoria.docx (entrega oficial)
     - codigo_fuente.zip       solo el código (solver, tests, wrapper, infra)
     - paquete_entrega.zip     todo lo que se sube al aula virtual
 
@@ -99,10 +100,57 @@ def empaquetar_completo() -> Path:
     return salida
 
 
+_WRAPPER_MAIN = '''"""Punto de entrada del solver A* (Robot Amazon).
+
+Ejecutar desde este directorio:
+
+    python main.py                    # corrida con traza compacta
+    python main.py --completa         # 323 iteraciones detalladas
+
+Ejecutar tests:
+    python -m unittest discover -s tests
+"""
+from solver.main import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+'''
+
+
+def empaquetar_simple() -> Path:
+    """Entrega minimalista solicitada por el equipo: solo .py del solver,
+    tests, memoria.docx, y un wrapper main.py para ejecución directa."""
+    salida = ENTREGABLES_DIR / "entrega_simple.zip"
+    salida.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(salida, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+        solver_dir = PROYECTO_DIR / "backend" / "app" / "solver"
+        for archivo in sorted(solver_dir.glob("*.py")):
+            zf.write(archivo, arcname=f"codigo/solver/{archivo.name}")
+        tests_dir = PROYECTO_DIR / "backend" / "tests"
+        if tests_dir.exists():
+            for archivo in sorted(tests_dir.rglob("*.py")):
+                if "__pycache__" in archivo.parts:
+                    continue
+                rel = archivo.relative_to(tests_dir)
+                # En el ZIP la estructura es codigo/solver/, no backend/app/solver/
+                contenido = archivo.read_text(encoding="utf-8").replace(
+                    "backend.app.solver", "solver"
+                )
+                zf.writestr(f"codigo/tests/{rel}", contenido)
+        # Wrapper main.py en la raíz para ejecución directa con `python main.py`
+        zf.writestr("codigo/main.py", _WRAPPER_MAIN)
+        docx = PROYECTO_DIR / "memoria" / "memoria.docx"
+        if docx.exists():
+            zf.write(docx, arcname="memoria.docx")
+    return salida
+
+
 def main() -> int:
     print("Empaquetando entregables...")
+    s = empaquetar_simple()
     a = empaquetar_codigo()
     b = empaquetar_completo()
+    print(f"  - {s}  ({s.stat().st_size / 1024:.1f} KB)  [SIMPLE — entrega oficial]")
     print(f"  - {a}  ({a.stat().st_size / 1024:.1f} KB)")
     print(f"  - {b}  ({b.stat().st_size / 1024:.1f} KB)")
     return 0

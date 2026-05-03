@@ -13,17 +13,15 @@
 - Mauricio Alberto Alvares Aspeitia
 - Cesar Ivan Martinez Perez
 
-**Fecha:** Abril 2026
+**Fecha:** Mayo 2026
 
 ---
 
 ## 1. Análisis del problema
 
-Amazon necesita un robot autónomo que reordene tres inventarios (`M1`, `M2`,
-`M3`) dentro de un almacén modelado como una matriz **4×4**. La matriz tiene
-dos paredes (`#`) en `(0,1)` y `(1,1)` que el robot no puede atravesar. El
-robot inicia en `(2,2)` y debe llevar cada inventario desde su posición
-inicial hasta su posición objetivo:
+El robot de Amazon arranca en `(2,2)` dentro de una matriz 4×4 con dos
+paredes fijas en `(0,1)` y `(1,1)`, y debe reubicar tres inventarios. La
+tabla resume el origen y destino de cada uno:
 
 | Inventario | Inicial | Objetivo |
 |---|---|---|
@@ -31,102 +29,110 @@ inicial hasta su posición objetivo:
 | M2 | (2,0) | (3,2) |
 | M3 | (0,3) | (3,1) |
 
-Cada acción del robot —mover en una de las cuatro direcciones cardinales,
-cargar un inventario, o descargarlo— tiene **coste real `g = 1`**. Como
-heurística obligatoria se utiliza la **distancia de Manhattan**. La Figura 1
-muestra el estado inicial renderizado por la herramienta.
+Las acciones disponibles son los cuatro movimientos cardinales más cargar y
+descargar inventario, todas con coste `g = 1`. La heurística obligatoria es
+la distancia de Manhattan.
 
 ## 2. Decisiones de modelado
 
-Suposiciones explícitas tomadas del enunciado:
+### 2.1 Hallazgo del equipo: la carga es necesariamente adyacente
 
-1. **Cargar y descargar son adyacentes** — el robot no pisa la celda del
-   inventario, está en una contigua; única opción consistente con "el robot
-   no puede entrar a casilla ocupada por inventario que no carga".
-2. **El inventario cargado viaja con el robot**; la celda origen queda libre.
-3. **Robot lleva un inventario a la vez** y **su posición final es libre**.
-4. **Notación de acciones** según enunciado: `mover R fila{f} columna{c}`,
-   `cargar R M{i} fila{f} columna{c}`, `descargar R M{i} fila{f} columna{c}`.
+Al analizar las acciones del robot identificamos una ambigüedad: el
+enunciado describe `cargar R M{i} fila{f} columna{c}` sin precisar si la
+acción se ejecuta **estando sobre la celda del inventario** o **desde una
+celda contigua**. Repasando todas las restricciones de movimiento del
+documento, encontramos que la regla *"el robot no puede entrar a una
+casilla ocupada por un inventario que no esté cargando"* (sección 8 de la
+especificación) cierra el caso: si el robot no puede pisar la casilla del
+inventario, no es posible cargarlo desde encima. La única lectura
+compatible con esa regla es que **cargar y descargar se hacen desde una
+celda adyacente** y el robot nunca pisa la celda del inventario.
 
-### Estructuras de datos
+Este hallazgo tiene tres consecuencias prácticas:
 
-| Estructura | Implementación | Propósito |
-|---|---|---|
-| `Estado` | `@dataclass(frozen=True, slots=True)` | Robot, qué carga, posiciones de M1/M2/M3. Inmutable y hasheable. |
-| `Nodo` | `@dataclass(frozen=True)` | Estado, padre, acción, `g`, `h`. `f = g + h`. |
-| `Frontera` | `heapq` | Cola de prioridad por `(f, h, contador FIFO)`. |
-| `Cerrada` | `dict[Estado, int]` | Estado → mejor `g` conocido. |
+- Cada operación de carga o descarga **añade exactamente 1 al coste real**
+  sobre la ruta directa de Manhattan, lo que refina la heurística (ver §3).
+- El factor de ramificación del espacio de estados aumenta respecto a un
+  modelo "carga sobre celda", porque el robot debe rodear cada inventario.
+- Permite reportar la dinámica completa del problema (ruta más corta más
+  ajustes de adyacencia), no sólo la trayectoria directa.
+
+### 2.2 Otras decisiones de modelado
+
+Además del hallazgo anterior, fijamos tres convenciones más para mantener
+consistencia con el enunciado:
+
+- **El inventario viaja con el robot** mientras está cargado y la celda
+  origen queda libre, lo que evita estados inconsistentes y respeta la
+  intuición operativa de un almacén real.
+- **El robot transporta un solo inventario a la vez** y su posición final
+  no está restringida — lo único que importa es dónde quedan `M1`, `M2` y
+  `M3`.
+- **La notación de acciones replica al enunciado al pie de la letra:**
+  `mover R fila{f} columna{c}`, `cargar R M{i} fila{f} columna{c}` y
+  `descargar R M{i} fila{f} columna{c}`.
+
+A nivel de código, el estado se implementó como
+`@dataclass(frozen=True, slots=True)` para que sea inmutable y hasheable
+(el robot, qué carga y las tres posiciones de inventario); el nodo del
+árbol agrega padre, acción, `g` y `h`; la frontera es un `heapq` ordenado
+por `(f, h, contador FIFO)`; y la lista cerrada es un `dict[Estado, int]`
+con el mejor `g` conocido por estado.
 
 ## 3. Heurística
 
 `h(n) = Σ manhattan(Mi, obj_Mi) + max(0, manhattan(R, M_más_cercano)-1)` cuando
 el robot no carga nada (-1 porque cargar es desde celda **adyacente**).
 
-**Admisibilidad.** Ignora paredes, ignora la mecánica de carga/descarga (cada
-una añade 1 al coste real) y no fuerza orden de inventarios — cada factor
-solo puede *aumentar* el coste real, por lo que la suma es cota inferior.
-
-**Verificación para el estado inicial:**
-
-| Componente | Cálculo | Valor |
-|---|---|---|
-| M1: (0,0) → (3,3) | 3+3 | 6 |
-| M2: (2,0) → (3,2) | 1+2 | 3 |
-| M3: (0,3) → (3,1) | 3+2 | 5 |
-| Ajuste robot → M2: max(0, 2-1) | | 1 |
-| **Total `h(inicial)`** | | **15** |
-
-`g(inicial) = 0`, `f(inicial) = 15`.
+Es admisible porque ignora paredes, no penaliza las acciones de carga y
+descarga (cada una suma 1 al coste real) y no fuerza ningún orden entre
+inventarios — todos esos factores sólo pueden aumentar el coste real, así
+que la suma siempre es una cota inferior. Para el estado inicial:
+`6 + 3 + 5 + 1 = 15`, lo que da `f(inicial) = g + h = 0 + 15 = 15`.
 
 ## 4. Algoritmo A\*
 
-Implementación estándar con dos refinamientos:
-
-1. **Desempate explícito** — empate de `f` se resuelve por menor `h` y luego
-   por orden FIFO (contador monótono), garantizando reproducibilidad.
-2. **Cerrada por mejor-g** — `dict[Estado, int]` con el mejor `g` conocido;
-   un estado puede reabrirse si llega con `g` estrictamente mejor.
+La implementación es la versión estándar del libro de Russell y Norvig, con
+dos detalles que vale la pena destacar. Primero, el desempate: cuando dos
+nodos tienen el mismo `f`, se prefiere el de menor `h`, y si vuelven a
+empatar, el más antiguo (FIFO) — esto vuelve la traza reproducible entre
+corridas. Segundo, la lista cerrada se guarda como `dict[Estado, int]`
+recordando el mejor `g` visto; un estado puede reabrirse sólo si reaparece
+con un `g` estrictamente menor, lo que en la práctica casi no ocurre porque
+nuestra heurística es consistente.
 
 ```python
-abierta.push(Nodo(s0, padre=None, accion=None, g=0, h=h(s0)))
-cerrada = {}
+abierta.push(Nodo(s0, g=0, h=h(s0)))
 while not abierta.vacia():
     n = abierta.pop()                       # menor f, luego h, luego FIFO
-    if n.estado in cerrada and cerrada[n.estado] <= n.g:
-        continue
+    if n.estado in cerrada and cerrada[n.estado] <= n.g: continue
     cerrada[n.estado] = n.g
-    if es_objetivo(n.estado):
-        return reconstruir_camino(n)
-    for accion, sucesor in sucesores(n.estado):
+    if es_objetivo(n.estado): return reconstruir_camino(n)
+    for accion, suc in sucesores(n.estado):
         g2 = n.g + 1
-        if sucesor in cerrada and cerrada[sucesor] <= g2:
-            continue
-        abierta.push(Nodo(sucesor, n, accion, g2, h(sucesor)))
+        if suc in cerrada and cerrada[suc] <= g2: continue
+        abierta.push(Nodo(suc, n, accion, g2, h(suc)))
 ```
 
-## 5. Plan de acción y desarrollo
+## 5. Plan de desarrollo y pruebas
 
-| Fase | Entregable |
-|---|---|
-| 1 | Confirmación de suposiciones del modelado (carga adyacente, etc.) |
-| 2 | `estado.py`, `acciones.py`, `heuristica.py` |
-| 3 | `nodo.py`, `frontera.py`, `astar.py` |
-| 4 | `traza.py` y `main.py` (cumple criterios 2 y 3 de la rúbrica) |
-| 5 | Tests unitarios (`pytest`/`unittest`) |
-| 6 | Corrida final, captura de salida, redacción de la memoria |
+El trabajo se ordenó en seis tramos: fijar las suposiciones de modelado,
+implementar `estado.py`/`acciones.py`/`heuristica.py`, después la
+infraestructura del árbol (`nodo.py`, `frontera.py`, `astar.py`), seguido
+por `traza.py` y `main.py` para cubrir los criterios 2 y 3 de la rúbrica,
+y finalmente la batería de tests y la corrida que alimenta esta memoria.
 
-## 6. Pruebas realizadas
+La suite tiene **24 pruebas** ejecutables con `python -m unittest discover`
+(Ran 24 tests in 0.041s — OK):
 
-**24 pruebas** con `unittest` (Ran 24 tests in 0.041s — OK):
-
-| Archivo | Verifica |
+| Archivo | Qué verifica |
 |---|---|
 | `test_heuristica.py` | Manhattan en valores conocidos, `h(inicial)=15`, admisibilidad. |
-| `test_sucesores.py` | Movimientos válidos, no pisa paredes/inventarios, cargar adyacente. |
+| `test_sucesores.py` | Movimientos válidos, no pisa paredes ni inventarios, carga adyacente. |
 | `test_astar.py` | Caso trivial, problema completo, coste óptimo = **19 acciones**. |
 | `test_secuencia.py` | Simulación inversa al estado objetivo; notación correcta; 3 cargas / 3 descargas. |
 
-## 7. Resultado de la corrida final
+## 6. Resultado de la corrida final
 
 ```
 Iteraciones (nodos expandidos): 323
@@ -135,7 +141,14 @@ Coste total g(objetivo):        19
 Longitud de la secuencia:       19
 ```
 
-**Secuencia de acciones óptima** (notación del enunciado):
+Las 323 corresponden a **expansiones** del bucle principal de A\*, no a
+la longitud del plan: A\* abre y descarta cientos de nodos antes de
+estabilizar la ruta óptima, que termina siendo de **19 acciones**. La
+distinción es relevante porque algunas implementaciones reportan
+únicamente los pasos del camino devuelto y eso da la impresión de que
+el algoritmo apenas trabajó.
+
+**Secuencia óptima** (notación del enunciado):
 
 ```
  1. mover R fila2 columna1            11. mover R fila2 columna2
@@ -150,69 +163,52 @@ Longitud de la secuencia:       19
 10. mover R fila2 columna1
 ```
 
-> La traza completa por iteración (listas abierta y cerrada con `g`, `h`, `f`
-> de cada nodo) se incluye en el anexo `salidas/traza_corrida_final.txt`. La
-> traza con detalle exhaustivo de las 323 iteraciones está en
-> `salidas/traza_completa.txt`.
+En la traza, durante el descenso óptimo `f` se mantiene en 15: cada paso
+suma 1 a `g` y resta 1 a `h`, lo que confirma que la heurística está bien
+calibrada en la zona crítica. La traza por iteración con listas abierta y
+cerrada se incluye como anexo en `salidas/traza_corrida_final.txt` (versión
+resumida) y `salidas/traza_completa.txt` (las 323 expansiones detalladas).
 
-### 7.1 Tabla de las primeras iteraciones
+## 7. Capturas y dificultades encontradas
 
-Primeras 3 iteraciones tal cual las imprime el programa (verificación
-contra traza manual; las 323 completas en `salidas/traza_completa.txt`):
-
-```
-=== Iteracion 1 ===  [g=0 h=15 f=15]  R(2,2) M1(0,0) M2(2,0) M3(0,3)
-   ABIERTA: (vacia)            CERRADA: { R(2,2) [g=0] }
-
-=== Iteracion 2 ===  [g=1 h=14 f=15]  R(2,1)
-   ABIERTA: R(1,2) f=16, R(2,3) f=16, R(3,2) f=17
-   CERRADA: R(2,2) [g=0], R(2,1) [g=1]
-
-=== Iteracion 3 ===  [g=2 h=13 f=15]  R(2,1) carga=M2     <-- carga M2
-   ABIERTA: R(1,2) f=16, R(2,3) f=16, R(3,1) f=17, R(3,2) f=17
-   CERRADA: ..., R(2,1)+M2 [g=2]
-```
-
-`f` se mantiene constante en 15 durante el descenso óptimo: mientras `g`
-crece, `h` decrece — la heurística está bien calibrada en la región crítica.
-
-## 8. Pantallazos del proceso
-
-Capturas de la herramienta interactiva (Forest Design System sobre Tailwind 4)
-que envuelve al solver. El ZIP de entrega incluye las 7 capturas completas.
+Para verificar visualmente el comportamiento del solver, montamos una
+herramienta interactiva sobre el Forest Design System (Tailwind 4). La
+Figura 1 muestra la pantalla con los KPIs y la secuencia óptima — los
+mismos 19 pasos del listado anterior. La Figura 2 reproduce la vista
+"Iteraciones" con `g`, `h`, `f` por nodo y el tamaño de cada lista,
+material útil para el criterio 3 de la rúbrica.
 
 ![Resultado de A* — h=15, 323 iteraciones, 836 generados, g*=19, secuencia de 19 acciones](capturas/03_solver_resultado.png)
 
-*Figura 1. Resultado de A\* — KPIs y secuencia óptima de 19 acciones (criterios 2 y 4).*
+*Figura 1. Resultado de A\* — KPIs y secuencia óptima de 19 acciones.*
 
 ![Tabla de iteraciones con listas abierta y cerrada por nodo expandido](capturas/05_iteraciones.png)
 
-*Figura 2. Vista "Iteraciones" — traza con g, h, f y tamaño de listas abierta/cerrada por iteración (criterio 3).*
+*Figura 2. Vista "Iteraciones" — traza con `g`, `h`, `f` y tamaños de listas abierta/cerrada.*
 
-## 9. Dificultades encontradas
+Durante la implementación encontramos dos dificultades técnicas. La
+primera tuvo que ver con el volumen de la traza: las 323 expansiones,
+imprimiendo la lista cerrada completa, producen alrededor de 139 mil
+líneas; para evitar archivos inmanejables añadimos un modo "primeras N
+detalladas + resto resumido" y dejamos la traza completa sólo como anexo.
+La segunda fue el desempate entre nodos con el mismo `f`: sin un criterio
+explícito el orden cambiaba entre corridas y la traza dejaba de ser
+reproducible, problema que se atacó fijando la tupla
+`(f, h, contador FIFO)` dentro del `heapq`. A esto se suma el hallazgo
+sobre la adyacencia de carga que ya discutimos en la sección 2.1, que
+también nos hizo replantear la heurística inicial.
 
-1. **Modelo de carga ambiguo.** El enunciado no fija si "cargar" se hace
-   sobre la celda del inventario o desde adyacente. La regla "el robot no
-   puede entrar a casilla ocupada por inventario" obliga a **carga adyacente**.
-2. **Volumen de la traza.** 323 iteraciones imprimiendo la cerrada completa
-   producen ~139k líneas. Se añadió un modo "primeras N detalladas + resto
-   resumido" sin perder la traza completa como anexo.
-3. **Desempate reproducible.** Sin criterio explícito el orden cambia entre
-   corridas. Se resolvió con `(f, h, contador FIFO)` en `heapq`.
-4. **Encoding Windows.** Stdout en CP1252 corrompía no-ASCII; se fuerza UTF-8
-   con `PYTHONIOENCODING=utf-8` y se evitan caracteres conflictivos.
+## 8. Cómo ejecutar
 
-## 10. Cómo ejecutar
-
-Desde `astar_robot_amazon/` con Python 3.10+:
+Desde el directorio `codigo/` del paquete entregado, con Python 3.10+:
 
 ```bash
-python -m backend.app.solver.main                    # corrida con traza compacta
-python -m backend.app.solver.main --completa         # 323 iteraciones detalladas
-python -m unittest discover -s backend/tests          # 24 tests
+python main.py                    # corrida con traza compacta
+python main.py --completa         # las 323 iteraciones detalladas
+python -m unittest discover -s tests   # 24 tests
 ```
 
-## 11. Referencias bibliográficas (APA)
+## 9. Referencias bibliográficas (APA)
 
 - Russell, S. J., & Norvig, P. (2021). *Artificial Intelligence: A Modern Approach* (4th ed.). Pearson.
 - Hart, P. E., Nilsson, N. J., & Raphael, B. (1968). A formal basis for the heuristic determination of minimum cost paths. *IEEE Transactions on Systems Science and Cybernetics*, 4(2), 100–107. https://doi.org/10.1109/TSSC.1968.300136
@@ -244,5 +240,5 @@ astar_robot_amazon/
 
 ## Anexo B — Código fuente
 
-> *(Adjuntar los archivos del directorio `backend/app/solver/` y
-> `backend/tests/` como anexo. No cuentan para el límite de 10 páginas.)*
+> *(Se adjuntan los archivos del directorio `backend/app/solver/` y
+> `backend/tests/`. No cuentan para el límite de páginas del cuerpo.)*

@@ -128,7 +128,7 @@ def convertir(md: str, doc: Document) -> None:
             if ruta_abs.exists():
                 p = doc.add_paragraph()
                 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                p.add_run().add_picture(str(ruta_abs), width=Inches(4.0))
+                p.add_run().add_picture(str(ruta_abs), width=Inches(3.4))
             else:
                 p = doc.add_paragraph()
                 r = p.add_run(f"[imagen no encontrada: {ruta_rel}]")

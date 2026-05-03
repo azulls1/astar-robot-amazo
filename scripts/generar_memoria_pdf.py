@@ -4,7 +4,7 @@ Estrategia:
 1. Intenta `docx2pdf` (usa Word COM en Windows / Office en macOS).
 2. Como fallback intenta LibreOffice headless si está en el PATH.
 3. Imprime conteo de páginas del PDF generado y avisa si supera el límite
-   académico de 10 páginas (sin contar el anexo de código).
+   académico de 9 páginas (sin contar el anexo de código).
 
 Uso:
     python scripts/generar_memoria_pdf.py
@@ -21,7 +21,7 @@ PROYECTO_DIR = Path(__file__).resolve().parents[1]
 DOCX_PATH = PROYECTO_DIR / "memoria" / "memoria.docx"
 PDF_PATH = PROYECTO_DIR / "memoria" / "memoria.pdf"
 
-LIMITE_PAGINAS_SIN_ANEXO = 10
+LIMITE_PAGINAS_SIN_ANEXO = 9
 
 
 def _convertir_con_docx2pdf() -> bool:
@@ -133,7 +133,7 @@ def main() -> int:
     if inicio_anexo is None:
         print(
             "  AVISO: no se pudo detectar el inicio del Anexo. Verifica visualmente"
-            " que el cuerpo (hasta el final de la seccion 11) tenga <= 10 paginas."
+            " que el cuerpo (hasta el final de la seccion 9) tenga <= 9 paginas."
         )
         return 0
 

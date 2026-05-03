@@ -48,8 +48,9 @@ astar_robot_amazon/
 │   ├── traza_corrida_final.txt       # Salida compacta del solver
 │   └── traza_completa.txt            # Las 323 iteraciones detalladas
 └── entregables/
-    ├── codigo_fuente.zip
-    └── paquete_entrega.zip           # Memoria + trazas + código (subir al aula)
+    ├── entrega_simple.zip            # ★ Entrega oficial: solver + tests + memoria.docx
+    ├── codigo_fuente.zip             # Solo código (respaldo)
+    └── paquete_entrega.zip           # Todo (memoria + trazas + capturas + código)
 ```
 
 ## Cómo correr todo
@@ -128,12 +129,15 @@ python scripts/empaquetar_entregables.py          # ZIPs en entregables/
 
 ## Decisiones de modelado
 
-- **Cargar/descargar son adyacentes** (consistente con "no pisar celdas con inventario").
+- **Cargar/descargar son adyacentes** — hallazgo del equipo derivado de la
+  sección 8 del enunciado: si el robot no puede pisar una casilla con un
+  inventario que no carga, no puede cargarlo "estando sobre" — sólo desde
+  una celda contigua.
 - **Inventario cargado viaja con el robot** (su posición = posición del robot).
 - **Robot solo lleva un inventario a la vez.**
 - **Posición final del robot libre.**
 
-Ver `memoria/memoria.md` §2 para el detalle.
+Ver `memoria/memoria.md` §2.1 para el desarrollo del hallazgo.
 
 ## Specs (fuentes de verdad)
 
@@ -152,6 +156,26 @@ Ver `memoria/memoria.md` §2 para el detalle.
 
 ## Para entregar
 
-1. Abrir `memoria/memoria.docx` y rellenar la **portada** (nombres del equipo, fecha, universidad).
-2. Verificar que `entregables/paquete_entrega.zip` contiene memoria + trazas + código.
-3. Subir el paquete al aula virtual.
+La entrega oficial es **`entregables/entrega_simple.zip`** (~675 KB), que
+contiene:
+
+```
+entrega_simple.zip
+├── codigo/
+│   ├── main.py            ← punto de entrada (`python main.py`)
+│   ├── solver/*.py        ← 9 archivos del A*
+│   └── tests/*.py         ← 24 tests (`python -m unittest discover -s tests`)
+└── memoria.docx           ← Calibri 12, interlineado 1.5, ≤9 páginas
+```
+
+**Pasos:**
+
+1. Abrir `memoria/memoria.docx` y formatear referencias de tablas a mano si
+   se desea (la portada ya trae al equipo 1073F y la fecha).
+2. Regenerar el ZIP si hubo cambios:
+   `python scripts/empaquetar_entregables.py`
+3. Subir `entrega_simple.zip` al aula virtual.
+
+> El ZIP se ha probado descomprimiéndolo en limpio: `python main.py` produce
+> las 323 iteraciones y la secuencia óptima de 19 acciones, y los 24 tests
+> pasan. La maestra puede ejecutarlo sin instalar dependencias adicionales.
