@@ -34,6 +34,13 @@ import { ModalConfig } from '../../shared/info-modal.types';
         style="min-height: 22rem;"
       >
         <div class="relative z-10 px-6 py-12 sm:px-12 sm:py-14 text-center">
+          <!-- Logo iagentek (logo blanco sobre fondo dark del hero) -->
+          <img
+            src="/assets/images/logo-iagentek.webp"
+            alt="iagentek"
+            class="mx-auto mb-5 h-10 w-auto opacity-95"
+          />
+
           <div
             class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-subtle mb-6"
           >

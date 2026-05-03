@@ -25,22 +25,26 @@ interface NavGroup {
         class="sidebar hidden lg:flex lg:flex-col"
         aria-label="Navegación principal"
       >
-        <!-- Brand del producto -->
+        <!-- Brand del producto · logo iagentek en caja oscura (logo es blanco con alpha) -->
         <a
           routerLink="/dashboard"
           class="flex items-center gap-3 px-4 h-[60px] border-b border-fog/30"
         >
           <div
-            class="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center text-white text-sm font-bold shadow-forest shrink-0"
+            class="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center shadow-forest shrink-0 p-1.5"
           >
-            A*
+            <img
+              src="/assets/images/logo-iagentek.webp"
+              alt="iagentek"
+              class="w-full h-full object-contain"
+            />
           </div>
           <div class="leading-tight min-w-0">
             <p class="text-sm font-semibold text-forest truncate">
               A* Robot Amazon
             </p>
             <p class="text-[11px] text-moss truncate">
-              A* + Manhattan · Actividad 1
+              by iagentek · UNIR 2026
             </p>
           </div>
         </a>
@@ -100,9 +104,13 @@ interface NavGroup {
               class="flex items-center gap-2 lg:hidden"
             >
               <div
-                class="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center text-white text-xs font-bold shadow-forest"
+                class="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center shadow-forest p-1"
               >
-                A*
+                <img
+                  src="/assets/images/logo-iagentek.webp"
+                  alt="iagentek"
+                  class="w-full h-full object-contain"
+                />
               </div>
               <span class="text-sm font-semibold text-forest">
                 A* Robot Amazon

@@ -27,6 +27,13 @@ type EstadoApi = 'comprobando' | 'ok' | 'error';
         style="min-height: 28rem;"
       >
         <div class="relative z-10 px-6 py-12 sm:px-12 sm:py-16 text-center">
+          <!-- Logo iagentek (white logo sobre fondo dark del hero) -->
+          <img
+            src="/assets/images/logo-iagentek.webp"
+            alt="iagentek"
+            class="mx-auto mb-6 h-12 sm:h-14 w-auto opacity-95"
+          />
+
           <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-subtle mb-6">
             <span class="w-2 h-2 rounded-full bg-pine animate-pulse"></span>
             <span class="text-xs font-medium text-fog tracking-wider">
