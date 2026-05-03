@@ -31,49 +31,50 @@ import { ModalConfig } from '../../shared/info-modal.types';
             <strong class="text-forest">criterio 3 (20%)</strong> de la rúbrica.
           </p>
         </div>
-        <div class="flex flex-col items-end gap-2">
-          <button (click)="resolver()" [disabled]="cargando()" class="btn btn-cta">
-            @if (cargando()) {
-              <span class="loading-dots"
-                ><span></span><span></span><span></span
-              ></span>
-              Recalculando…
-            } @else {
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4 4v6h6M20 20v-6h-6M5 13a8 8 0 0014.5 4M19 11a8 8 0 00-14.5-4"
-                />
-              </svg>
-              Recalcular
-            }
-          </button>
-          @if (ultimaCorrida(); as t) {
-            <p
-              class="text-xs text-moss font-mono flex items-center gap-1.5"
-              [class.text-pine]="recienActualizado()"
+        <button (click)="resolver()" [disabled]="cargando()" class="btn btn-cta shrink-0">
+          @if (cargando()) {
+            <span class="loading-dots"
+              ><span></span><span></span><span></span
+            ></span>
+            Recalculando…
+          } @else {
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
             >
-              @if (recienActualizado()) {
-                <span
-                  class="inline-block w-1.5 h-1.5 rounded-full bg-pine animate-pulse"
-                ></span>
-                ¡actualizado!
-              } @else {
-                <span class="inline-block w-1.5 h-1.5 rounded-full bg-moss/50"></span>
-                última corrida: {{ t | date: 'HH:mm:ss' }}
-              }
-              · {{ duracionMs() }} ms
-            </p>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 4v6h6M20 20v-6h-6M5 13a8 8 0 0014.5 4M19 11a8 8 0 00-14.5-4"
+              />
+            </svg>
+            Recalcular
           }
-        </div>
+        </button>
       </header>
+
+      <!-- Strip de feedback de última corrida (fila completa, no afecta al header) -->
+      @if (ultimaCorrida(); as t) {
+        <p
+          class="text-xs font-mono flex items-center gap-1.5 -mt-3"
+          [class.text-pine]="recienActualizado()"
+          [class.text-moss]="!recienActualizado()"
+        >
+          @if (recienActualizado()) {
+            <span
+              class="inline-block w-1.5 h-1.5 rounded-full bg-pine animate-pulse"
+            ></span>
+            ¡actualizado!
+          } @else {
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-moss/50"></span>
+            última corrida: {{ t | date: 'HH:mm:ss' }}
+          }
+          · {{ duracionMs() }} ms
+        </p>
+      }
 
       @if (error()) {
         <div class="alert alert-error">
