@@ -1,14 +1,17 @@
 FROM node:22-alpine AS build
 
+# `development` usa environment.ts (localhost:8000) — bueno para Docker Compose local.
+# `production` usa environment.prod.ts (rutas relativas + nginx proxy) — para despliegue.
+ARG BUILD_CONFIG=development
+
 WORKDIR /app
 
 # Cache de dependencias
 COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
-# Código + build (development apunta a localhost:8000 según environment.ts)
 COPY frontend ./
-RUN npx ng build --configuration=development
+RUN npx ng build --configuration=$BUILD_CONFIG
 
 FROM nginx:1.27-alpine
 

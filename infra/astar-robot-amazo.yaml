@@ -1,0 +1,59 @@
+# Stack Swarm para iagentek.com.mx — A* Robot Amazon
+#
+# Topología:
+#   Traefik (iagenteknet) ──> frontend nginx (Angular SPA + proxy /api/)
+#                              └── proxy_pass /api/ ──> backend FastAPI (internal)
+#
+# Solo el frontend está expuesto: el backend resuelve A* sync por HTTP, sin
+# Celery ni Redis (el solver tarda ~ms — innecesario para esta entrega).
+#
+# Despliegue (en el VPS, después de hacer build de las imágenes):
+#   docker stack deploy -c /root/astar-robot-amazo.yaml astar-robot-amazo
+
+version: "3.7"
+
+services:
+
+  backend:
+    image: astar-robot-amazo-backend:latest
+    environment:
+      - APP_ENV=production
+      - CORS_ORIGINS=https://astar-robot-amazo.iagentek.com.mx
+    networks:
+      - internal
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+
+  frontend:
+    image: astar-robot-amazo-frontend:latest
+    networks:
+      - iagenteknet
+      - internal
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=iagenteknet"
+        - "traefik.http.routers.astar-robot-amazo.rule=Host(`astar-robot-amazo.iagentek.com.mx`)"
+        - "traefik.http.routers.astar-robot-amazo.entrypoints=websecure"
+        - "traefik.http.routers.astar-robot-amazo.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.astar-robot-amazo.service=astar-robot-amazo"
+        - "traefik.http.services.astar-robot-amazo.loadbalancer.server.port=80"
+
+networks:
+  iagenteknet:
+    external: true
+    attachable: true
+    name: iagenteknet
+  internal:
+    driver: overlay
