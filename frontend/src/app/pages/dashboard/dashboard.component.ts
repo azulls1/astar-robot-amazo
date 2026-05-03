@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ApiService } from '../../services/api.service';
 import { InfoModalService } from '../../shared/info-modal.service';
 import {
   KPI_COSTE,
@@ -12,8 +11,6 @@ import {
   RUB_SECUENCIA,
 } from '../../shared/info-content';
 import { ModalConfig } from '../../shared/info-modal.types';
-
-type EstadoApi = 'comprobando' | 'ok' | 'error';
 
 @Component({
   selector: 'app-dashboard',
@@ -68,51 +65,6 @@ type EstadoApi = 'comprobando' | 'ok' | 'error';
               Alberto Alvares Aspeitia · Cesar Ivan Martinez Perez
             </p>
           </div>
-        </div>
-      </div>
-
-      <!-- API status banner -->
-      <div
-        class="alert animate-fadeInUp"
-        [ngClass]="{
-          'alert-success': estadoApi() === 'ok',
-          'alert-warning': estadoApi() === 'comprobando',
-          'alert-error': estadoApi() === 'error',
-        }"
-      >
-        <div class="alert__icon">
-          @if (estadoApi() === 'ok') {
-            <span class="w-2.5 h-2.5 rounded-full bg-pine animate-pulse"></span>
-          } @else if (estadoApi() === 'comprobando') {
-            <span class="loading-dots"
-              ><span></span><span></span><span></span
-            ></span>
-          } @else {
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4a2 2 0 00-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"
-              />
-            </svg>
-          }
-        </div>
-        <div class="alert__content">
-          @if (estadoApi() === 'ok') {
-            <strong>API conectada y funcionando correctamente</strong> — backend en
-            <code class="tag ml-1">{{ apiUrl }}</code>
-          } @else if (estadoApi() === 'comprobando') {
-            Comprobando conexión con el backend…
-          } @else {
-            <strong>Backend no responde.</strong> Verifica que el servicio esté
-            corriendo en <code class="tag ml-1">{{ apiUrl }}</code>
-          }
         </div>
       </div>
 
@@ -337,11 +289,8 @@ type EstadoApi = 'comprobando' | 'ok' | 'error';
     </section>
   `,
 })
-export class DashboardComponent implements OnInit {
-  private api = inject(ApiService);
+export class DashboardComponent {
   private modalSvc = inject(InfoModalService);
-  estadoApi = signal<EstadoApi>('comprobando');
-  apiUrl = '';
 
   // Re-exportados al template
   readonly KPI_COSTE = KPI_COSTE;
@@ -376,13 +325,5 @@ export class DashboardComponent implements OnInit {
 
   abrir(cfg: ModalConfig, ev?: Event): void {
     this.modalSvc.open(cfg, ev?.currentTarget as HTMLElement);
-  }
-
-  ngOnInit(): void {
-    this.apiUrl = (this.api as any)['base'] ?? 'http://localhost:8000';
-    this.api.entrega().subscribe({
-      next: () => this.estadoApi.set('ok'),
-      error: () => this.estadoApi.set('error'),
-    });
   }
 }
