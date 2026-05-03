@@ -132,12 +132,12 @@ interface NavGroup {
             <!-- Acciones derecha -->
             <div class="flex items-center gap-3">
               <a
-                href="https://github.com"
+                href="https://github.com/azulls1/astar-robot-amazo"
                 target="_blank"
                 rel="noopener"
                 class="btn btn-icon"
-                title="Repositorio"
-                aria-label="Repositorio"
+                title="Repositorio en GitHub"
+                aria-label="Repositorio en GitHub"
               >
                 <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path
