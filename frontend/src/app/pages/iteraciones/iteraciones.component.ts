@@ -31,29 +31,48 @@ import { ModalConfig } from '../../shared/info-modal.types';
             <strong class="text-forest">criterio 3 (20%)</strong> de la rúbrica.
           </p>
         </div>
-        <button (click)="resolver()" [disabled]="cargando()" class="btn btn-cta">
-          @if (cargando()) {
-            <span class="loading-dots"
-              ><span></span><span></span><span></span
-            ></span>
-            Recalculando…
-          } @else {
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
+        <div class="flex flex-col items-end gap-2">
+          <button (click)="resolver()" [disabled]="cargando()" class="btn btn-cta">
+            @if (cargando()) {
+              <span class="loading-dots"
+                ><span></span><span></span><span></span
+              ></span>
+              Recalculando…
+            } @else {
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 4v6h6M20 20v-6h-6M5 13a8 8 0 0014.5 4M19 11a8 8 0 00-14.5-4"
+                />
+              </svg>
+              Recalcular
+            }
+          </button>
+          @if (ultimaCorrida(); as t) {
+            <p
+              class="text-xs text-moss font-mono flex items-center gap-1.5"
+              [class.text-pine]="recienActualizado()"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M4 4v6h6M20 20v-6h-6M5 13a8 8 0 0014.5 4M19 11a8 8 0 00-14.5-4"
-              />
-            </svg>
-            Recalcular
+              @if (recienActualizado()) {
+                <span
+                  class="inline-block w-1.5 h-1.5 rounded-full bg-pine animate-pulse"
+                ></span>
+                ¡actualizado!
+              } @else {
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-moss/50"></span>
+                última corrida: {{ t | date: 'HH:mm:ss' }}
+              }
+              · {{ duracionMs() }} ms
+            </p>
           }
-        </button>
+        </div>
       </header>
 
       @if (error()) {
@@ -230,6 +249,9 @@ export class IteracionesComponent implements OnInit {
   cargando = signal(false);
   error = signal<string | null>(null);
   filtroF = signal<string>('');
+  ultimaCorrida = signal<Date | null>(null);
+  duracionMs = signal<number>(0);
+  recienActualizado = signal(false);
 
   // Re-exportados al template
   readonly KPI_ITERACIONES = KPI_ITERACIONES;
@@ -360,10 +382,15 @@ export class IteracionesComponent implements OnInit {
   resolver(): void {
     this.cargando.set(true);
     this.error.set(null);
+    const t0 = performance.now();
     this.api.resolver().subscribe({
       next: (r) => {
         this.resultado.set(r);
+        this.duracionMs.set(Math.round(performance.now() - t0));
+        this.ultimaCorrida.set(new Date());
         this.cargando.set(false);
+        this.recienActualizado.set(true);
+        setTimeout(() => this.recienActualizado.set(false), 2500);
       },
       error: (e) => {
         this.error.set('Error al ejecutar A*: ' + (e?.message ?? 'desconocido'));
